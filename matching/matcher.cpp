@@ -1188,7 +1188,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist(vector<tuple<float, in
         ind = y[i];
         if(S[ind]<0.0001)
             break;
-        if(flag_latent[get<1>(corr[ind])] == 1 | flag_rolled[get<2>(corr[ind])] == 1)
+        if((flag_latent[get<1>(corr[ind])] == 1) || (flag_rolled[get<2>(corr[ind])] == 1))
             continue;
 
         if(i==0)
@@ -1256,7 +1256,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_lookup(vector<tuple<fl
             dy_1 = abs(dy_1);
             dy_2 = abs(dy_2);
 
-            if(dx_1>=dist_N | dx_2>=dist_N | dy_1>=dist_N | dy_2>=dist_N)
+            if((dx_1>=dist_N) || (dx_2>=dist_N) || (dy_1>=dist_N) || (dy_2>=dist_N))
                 continue;
 
             dist_1 = table_dist[dx_1*dist_N+dy_1];
@@ -1312,7 +1312,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_lookup(vector<tuple<fl
         ind = y[i];
         if(S[ind]<0.0001)
             break;
-        if(flag_latent[get<1>(corr[ind])] == 1 | flag_rolled[get<2>(corr[ind])] == 1)
+        if((flag_latent[get<1>(corr[ind])] == 1) || (flag_rolled[get<2>(corr[ind])] == 1))
             continue;
 
         if(i==0)
@@ -1433,7 +1433,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_eigen(vector<tuple<flo
         ind = y[i];
         if(S[ind]<0.0001)
             break;
-        if(flag_latent[get<1>(corr[ind])] == 1 | flag_rolled[get<2>(corr[ind])] == 1)
+        if((flag_latent[get<1>(corr[ind])] == 1) || (flag_rolled[get<2>(corr[ind])] == 1))
             continue;
 
         if(i==0)
@@ -1600,7 +1600,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2(vector<tuple<float, int, in
         ind = y[i];
         if(S[ind]<0.001)
             break;
-        if(flag_latent[get<1>(corr[ind])] == 1 | flag_rolled[get<2>(corr[ind])] == 1)
+        if((flag_latent[get<1>(corr[ind])] == 1) || (flag_rolled[get<2>(corr[ind])] == 1))
             continue;
 
           if(i==0)
