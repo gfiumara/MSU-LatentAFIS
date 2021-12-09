@@ -122,7 +122,7 @@ def template_compression(input_dir='', output_dir=None, model_path=None, isLaten
         print ("File list empty", file_list)
         return
 
-    file_list.sort(key=lambda filename: int(''.join(filter(str.isdigit, filename.encode("utf-8")))))
+    file_list.sort()
 
     # Create Model
     # filename_model = './dim_reduction/testmodel'
