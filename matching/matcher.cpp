@@ -371,6 +371,7 @@ int Matcher::One2One_matching_all_templates(LatentFPTemplate &latent_template, R
         score[i+latent_template.m_nrof_minu_templates] = s;
     }
 
+   return 0;
 }
 
 int Matcher::One2One_matching_selected_templates(LatentFPTemplate &latent_template, RolledFPTemplate &rolled_template, vector<float> & score, bool save_corr, string corr_file)
@@ -414,6 +415,7 @@ int Matcher::One2One_matching_selected_templates(LatentFPTemplate &latent_templa
         score[i+latent_template.m_nrof_minu_templates] = s;
     }
 
+    return 0;
 }
 
 
