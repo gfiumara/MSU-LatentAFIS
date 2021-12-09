@@ -241,7 +241,7 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
     // Create a vector of indices
     // Allows us to output a sorted score list for use with the GUI
     vector<int> ind(rolled_template_files.size(), 0);
-    for(int n; n != rolled_template_files.size(); n++){
+    for(int n = 0; n != rolled_template_files.size(); n++){
         ind[n] = n;
     }
 
