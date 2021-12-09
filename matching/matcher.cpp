@@ -174,7 +174,7 @@ int Matcher::List2List_matching(string latent_path, string rolled_path, string s
                 {
                     rolled_FP.m_nrof_minu_templates=0;
                     rolled_FP.m_nrof_texture_templates = 0;
-                };
+                }
 
 				vector<float> score;
 				result = One2One_matching_selected_templates(latent_FP,rolled_FP,score);
@@ -279,7 +279,7 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
             {
                 rolled_FP.m_nrof_minu_templates=0;
                 rolled_FP.m_nrof_texture_templates = 0;
-            };
+            }
 
             vector<float> score;
             result = One2One_matching_selected_templates(latent_FP,rolled_FP,score);
@@ -883,7 +883,7 @@ int Matcher::load_FP_template(string tname, LatentFPTemplate & fp_template)
     is.close();
 
     return 0;
-};
+}
 
 int Matcher::load_FP_template(string tname, RolledFPTemplate & fp_template)
 {
@@ -982,7 +982,7 @@ int Matcher::load_FP_template(string tname, RolledFPTemplate & fp_template)
     is.close();
 
     return 0;
-};
+}
 
 int Matcher::load_single_template(string tname, TextureTemplate& texture_template)
 {
@@ -1037,7 +1037,7 @@ int Matcher::load_single_template(string tname, TextureTemplate& texture_templat
 
     cout<<tname<<endl;
     return 0;
-};
+}
 
 int Matcher::load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu_template)
 {
@@ -1091,7 +1091,7 @@ int Matcher::load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu
     minu_template.init_des();
     cout<<tname<<endl;
     return 0;
-};
+}
 
 Matcher::Matcher(const Matcher& orig)
 {
@@ -1222,7 +1222,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist(vector<tuple<float, in
     }
 
     return new_corr;
-};
+}
 
 vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_lookup(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr)
 {
@@ -1347,7 +1347,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_lookup(vector<tuple<fl
 
     delete [] H; H=NULL;
     return new_corr;
-};
+}
 
 vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_eigen(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr)
 {
@@ -1468,7 +1468,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_eigen(vector<tuple<flo
 
      delete [] H; H=NULL;
     return new_corr;
-};
+}
 
 vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, int d_thr)
 {
@@ -1635,7 +1635,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2(vector<tuple<float, int, in
     }
 
     return new_corr;
-};
+}
 
 float Matcher::adjust_angle(float angle)
 {
