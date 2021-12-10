@@ -82,10 +82,6 @@ Building for Modern Systems
 
 Notes
 -----
- * The `models` directory hierarchy contains files that start with `._`. Delete all of these.
-   ```sh
-   find models -name '\._*' -delete
-   ```
  * `--idir` and `--tdir` arguments **require** trailing slash.
  * Exemplar and latents should be separated in input and output.
  * Template generation requires ~16 GB of RAM to operate.
