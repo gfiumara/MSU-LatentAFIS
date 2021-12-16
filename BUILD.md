@@ -10,7 +10,7 @@ Building for Modern Systems
 
     * CentOS 8.2
        ```sh
-       sudo dnf install python2 python2-virtualenv python2-tkinter libSM python2-devel eigen3-devel gcc-g++
+       sudo dnf install python2 python2-virtualenv python2-tkinter libSM python2-devel eigen3-devel gcc-c++
        ```
 
  2. Configure a virtual Python 2 environment
