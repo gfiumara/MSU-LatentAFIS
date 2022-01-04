@@ -663,7 +663,7 @@ def process_HighSign_markup_from_minutiae(img_path, minu_path,
     for i, minu_file in enumerate(minu_files):
         fname = os.path.basename(minu_file)
         print i, minu_file
-        img_file = img_path + fname[:-3] + 'bmp'
+        img_file = img_path + fname[:-3] + 'png'
         img0 = misc.imread(img_file, mode='L')
         minutiae = np.loadtxt(minu_file, delimiter=',')
         for j, angle in enumerate(range(0, 360, 90)):

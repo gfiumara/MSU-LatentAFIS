@@ -296,7 +296,7 @@ if __name__ == '__main__':
     # construct ridge structure dictionary for quality estimation or ridge spacing estimation
     dict = get_maps.construct_dictionary()
 
-    imgfiles = glob.glob('/Data/Latent/NISTSD27/image/*.bmp')
+    imgfiles = glob.glob('/Data/Latent/NISTSD27/image/*.png')
     imgfiles.sort()
     for imgfile in imgfiles:
         img = cv2.imread(imgfile, cv2.IMREAD_GRAYSCALE)

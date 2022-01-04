@@ -186,10 +186,10 @@ def show_orientation_field(img, dir_map, mask=None, fname=None, block=True):
 if __name__ == '__main__':
     img_path = '/Data/Latent/NISTSD27/image/'
     mask_path = '/Data/Latent/NISTSD27/maskNIST27/'
-    img_files = glob.glob(img_path + '*.bmp')
+    img_files = glob.glob(img_path + '*.png')
 
     img_files.sort()
-    mask_files = glob.glob(mask_path + '*.bmp')
+    mask_files = glob.glob(mask_path + '*.png')
     mask_files.sort()
     for img_file, mask_file in zip(img_files, mask_files):
         img = io.imread(img_file)

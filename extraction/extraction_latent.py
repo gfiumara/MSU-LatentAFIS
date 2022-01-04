@@ -279,7 +279,7 @@ class FeatureExtraction_Latent:
 
     def feature_extraction(self, image_dir, template_dir=None, minu_path=None, N1=0, N2=258):
 
-        img_files = glob.glob(image_dir + '*.bmp')
+        img_files = glob.glob(image_dir + '*.png')
         assert(len(img_files) > 0)
 
         if not os.path.exists(template_dir):

@@ -143,7 +143,7 @@ class FeatureExtraction_Rolled:
         print('time for texture : %f' % (stop - start))
         return rolled_template
 
-    def feature_extraction(self, image_dir, img_type='bmp', template_dir=None, enhancement=False):
+    def feature_extraction(self, image_dir, img_type='png', template_dir=None, enhancement=False):
 
         img_files = glob.glob(image_dir + '*.' + img_type)
         assert(len(img_files) > 0)
@@ -173,7 +173,7 @@ class FeatureExtraction_Rolled:
                 print(fname)
                 template.Template2Bin_Byte_TF_C(fname, rolled_template, isLatent=False)
 
-    def feature_extraction_Longitudinal(self, image_dir, img_type='bmp', template_dir=None, enhancement=False,
+    def feature_extraction_Longitudinal(self, image_dir, img_type='png', template_dir=None, enhancement=False,
                                         N1=0, N2=10000):
 
         subjects = os.listdir(image_dir)
@@ -184,7 +184,7 @@ class FeatureExtraction_Rolled:
         subjects = subjects[N1:N2]
         for i, subject in enumerate(subjects):
             for finger_ID in range(10):
-                img_files = glob.glob(os.path.join(image_dir, subject, '*' + str(finger_ID) + '.bmp'))
+                img_files = glob.glob(os.path.join(image_dir, subject, '*' + str(finger_ID) + '.png'))
                 img_files.sort()
                 if len(img_files) < 5:
                     continue
@@ -218,7 +218,7 @@ class FeatureExtraction_Rolled:
         assert(template_dir is not None)
         for i in range(N1, N2 + 1):
             start = timeit.default_timer()
-            img_file = os.path.join(image_dir, str(i) + '.bmp')
+            img_file = os.path.join(image_dir, str(i) + '.png')
             img_name = os.path.basename(img_file)
             fname = template_dir + os.path.splitext(img_name)[0] + '.dat'
             if os.path.exists(fname):
@@ -262,7 +262,7 @@ class FeatureExtraction_Rolled:
         assert(template_dir is not None)
         for i in range(N1, N2 + 1):
             start = timeit.default_timer()
-            img_file = os.path.join(image_dir, str(i) + '.bmp')
+            img_file = os.path.join(image_dir, str(i) + '.png')
             img_name = os.path.basename(img_file)
             fname = template_dir + os.path.splitext(img_name)[0] + '.dat'
             if os.path.exists(fname):

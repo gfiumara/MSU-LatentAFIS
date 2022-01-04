@@ -1041,7 +1041,7 @@ def compare_templates():
     print(len(template_2.minu_template[0].minutiae))
     img_path = '/Data/MSP_background/images/'
     from skimage import io
-    img = io.imread(img_path + str(max_minu_ind + 1) + '.bmp', s_grey=True)
+    img = io.imread(img_path + str(max_minu_ind + 1) + '.png', s_grey=True)
 
     template_file_1 = template_file_list_1[max_texture_ind]
     template_file_2 = template_file_list_2[max_texture_ind]
@@ -1051,7 +1051,7 @@ def compare_templates():
     print(len(template_1.texture_template[0].minutiae))
     print(len(template_2.texture_template[0].minutiae))
 
-    img = io.imread(img_path + str(max_texture_ind + 1) + '.bmp', s_grey=True)
+    img = io.imread(img_path + str(max_texture_ind + 1) + '.png', s_grey=True)
 
 
 if __name__ == '__main__':

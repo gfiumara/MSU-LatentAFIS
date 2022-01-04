@@ -144,7 +144,7 @@ class FeatureExtraction_Rolled:
         print('time for texture : %f' % (stop - start))
         return rolled_template
 
-    def feature_extraction(self,img_path,img_type='bmp',template_path=None, enhancement=False):
+    def feature_extraction(self,img_path,img_type='png',template_path=None, enhancement=False):
 
 
         img_files = glob.glob(img_path+'*.'+img_type)
@@ -174,7 +174,7 @@ class FeatureExtraction_Rolled:
                 fname = template_path + img_name + '.dat'
                 template.Template2Bin_Byte_TF_C(fname, rolled_template, isLatent=False)
 
-    def feature_extraction_Longitudinal(self,img_path,img_type='bmp',template_path=None, enhancement=False,N1=0,N2=10000):
+    def feature_extraction_Longitudinal(self,img_path,img_type='png',template_path=None, enhancement=False,N1=0,N2=10000):
 
 
         subjects = os.listdir(img_path)
@@ -186,7 +186,7 @@ class FeatureExtraction_Rolled:
         subjects = subjects[N1:N2]
         for i, subject in enumerate(subjects):
             for finger_ID in range(10):
-                img_files = glob.glob(os.path.join(img_path,subject,'*'+str(finger_ID)+'.bmp'))
+                img_files = glob.glob(os.path.join(img_path,subject,'*'+str(finger_ID)+'.png'))
                 img_files.sort()
                 if len(img_files)<5:
                     continue
@@ -220,7 +220,7 @@ class FeatureExtraction_Rolled:
         for i in range(N1,N2+1):
 
             start = timeit.default_timer()
-            img_file = os.path.join(img_path, str(i)+'.bmp')
+            img_file = os.path.join(img_path, str(i)+'.png')
             img_name = os.path.basename(img_file)
             rolled_template = self.feature_extraction_single_rolled(img_file,output_path=template_path)
             stop = timeit.default_timer()
@@ -255,7 +255,7 @@ class FeatureExtraction_Rolled:
         for i in range(N1,N2+1):
 
             start = timeit.default_timer()
-            img_file = os.path.join(img_path, str(i)+'.bmp')
+            img_file = os.path.join(img_path, str(i)+'.png')
             img_name = os.path.basename(img_file)
             fname = template_path + os.path.splitext(img_name)[0] + '.dat'
             if os.path.exists(fname):
@@ -348,7 +348,7 @@ if __name__ == '__main__':
     ## MSP background database
     if dataset == 'NISTSD27':
         img_path = '/Data/Latent/NISTSD27/image/'
-        img_type = 'bmp'
+        img_type = 'png'
         template_path = None
         LF_rolled = FeatureExtraction_Rolled(patch_types=patch_types, des_model_dirs=des_model_dirs,
                                              minu_model_dir=minu_model_dir)

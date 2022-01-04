@@ -375,7 +375,7 @@ def get_data_low_and_high(datadir):
     finger_paths = glob.glob(datadir + '/MI*')
     imgs = []
     for finger_path in finger_paths:
-        imgs_tmp = glob.glob(finger_path + '/high*.bmp')
+        imgs_tmp = glob.glob(finger_path + '/high*.png')
         imgs.extend(imgs_tmp)
 
     ds = ImageFromFile_AutoEcoder(imgs, channel=1, shuffle=True)
@@ -448,7 +448,7 @@ def get_model_filenames(model_dir):
 
 def enhancement2(model_path, sample_path, imgs, output_name='reconstruction/gen:0'):
     imgs = glob.glob('/Data/Data/Rolled/NISTSD4/Image_Aligned' + '/*.jpeg')
-    imgs = glob.glob('/Data/Latent/NISTSD27/image/*.bmp')
+    imgs = glob.glob('/Data/Latent/NISTSD27/image/*.png')
     imgs.sort()
     sample_path = '/AutomatedLatentRecognition/enhanced_latents_3/'
     weight = get_weights(opt.SHAPE, opt.SHAPE, 1)
@@ -492,7 +492,7 @@ def enhancement2(model_path, sample_path, imgs, output_name='reconstruction/gen:
 
 def enhancement_whole_image(model_path, sample_path, imgs, output_name='reconstruction/gen:0'):
     imgs = glob.glob('/Data/Data/Rolled/NISTSD4/Image_Aligned' + '/*.jpeg')
-    imgs = glob.glob('/Data/Latent/NISTSD27/image/*.bmp')
+    imgs = glob.glob('/Data/Latent/NISTSD27/image/*.png')
     imgs.sort()
     sample_path = '/AutomatedLatentRecognition/enhanced_latents_2/'
     with tf.Graph().as_default():
@@ -564,7 +564,7 @@ if __name__ == '__main__':
     args = get_args()
     print(args)
     if args.enhance and args.load:
-        imgs = ['/Data/Rolled/selected_rolled_prints/MI0479144T_07/low_02_A103585608W_07.bmp']
+        imgs = ['/Data/Rolled/selected_rolled_prints/MI0479144T_07/low_02_A103585608W_07.png']
         enhancement2(args.load, args.sample_dir, imgs)
     else:
         config = get_config(args.log_dir, args.data)

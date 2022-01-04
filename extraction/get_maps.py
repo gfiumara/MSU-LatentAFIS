@@ -655,13 +655,13 @@ def STFT_main(img, patch_size=64, block_size=16):
 
 def test_dir_map_STFT():
     img_path = '/Data/Latent/NISTSD27/image/'
-    imgfiles = glob.glob(img_path + '*.bmp')
+    imgfiles = glob.glob(img_path + '*.png')
     imgfiles.sort()
     get_maps_STFT(img, patch_size=64, block_size=16, preprocess=True)
 
 
 if __name__ == '__main__':
-    imgfile = 'images/F0000001.bmp'
+    imgfile = 'images/F0000001.png'
     img = scipy.ndimage.imread(imgfile)
     mask = get_quality_map_intensity(img)
     show.show_mask(mask, img=img)

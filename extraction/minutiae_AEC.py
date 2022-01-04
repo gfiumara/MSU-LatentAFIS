@@ -503,7 +503,7 @@ def get_data(datadir):
 
 
 def minutiae_extraction3(model_path, sample_path, imgs, output_name='reconstruction/gen:0', block=True):
-    imgs = glob.glob('/Data/Rolled/NIST4/Image/' + '*.bmp')
+    imgs = glob.glob('/Data/Rolled/NIST4/Image/' + '*.png')
 
     imgs.sort()
 
@@ -562,7 +562,7 @@ def minutiae_extraction3(model_path, sample_path, imgs, output_name='reconstruct
 
 
 def minutiae_extraction_latent(model_path, sample_path, imgs, output_name='reconstruction/gen:0', block=True):
-    imgs = glob.glob('/Data/Latent/DB/NIST27/image/' + '*.bmp')
+    imgs = glob.glob('/Data/Latent/DB/NIST27/image/' + '*.png')
 
     minu_files = glob.glob('/Data/Latent/DB/ManualInformation/NIST27/ManMinu/*.txt')
     minu_files.sort()
@@ -634,7 +634,7 @@ def minutiae_extraction_latent(model_path, sample_path, imgs, output_name='recon
 
 
 def minutiae_whole_image(model_path, sample_path, imgs, output_name='reconstruction/gen:0'):
-    imgs = glob.glob('/Data/Rolled/NISTSD14/Image2/*.bmp')
+    imgs = glob.glob('/Data/Rolled/NISTSD14/Image2/*.png')
     imgs.sort()
 
     with tf.Graph().as_default():
@@ -709,7 +709,7 @@ def compare_AEM_with_MMM(model_path, img_path='/Data/Latent/NISTSD27/image/',
                          minu_path='/Data/Latent/NISTSD27/ManMinu', processing=None, thr=0.01):
     minu_model = ImportGraph(model_path)
 
-    img_files = glob.glob(img_path + '*.bmp')
+    img_files = glob.glob(img_path + '*.png')
     img_files.sort()
 
     manu_files = glob.glob(minu_path + '*.txt')

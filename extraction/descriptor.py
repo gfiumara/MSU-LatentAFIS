@@ -192,7 +192,7 @@ if __name__ == '__main__':
     fname = 'Data/Latent/001.dat'
 
     latent_template = template.Bin2Template_Byte(fname, isLatent=1)
-    imgfile = '/latent/001.bmp'
+    imgfile = '/latent/001.png'
 
     img = cv2.imread(imgfile)
     h, w, c = img.shape
