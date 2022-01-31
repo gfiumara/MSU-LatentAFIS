@@ -45,7 +45,9 @@ public:
     int One2One_matching(string latent_file, string rolled_file);
     int load_single_template(string tname, TextureTemplate& texture_template);
     int load_FP_template(string tname, LatentFPTemplate & fp_template);
+    int load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate & fp_template);
     int load_FP_template(string tname, RolledFPTemplate & fp_template);
+    int load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate & fp_template);
     int load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu_template);
     Matcher(const Matcher& orig);
     virtual ~Matcher();
