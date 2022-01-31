@@ -886,7 +886,7 @@ int Matcher::load_FP_template(string tname, LatentFPTemplate & fp_template)
     return 0;
 }
 
-int Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate & fp_template)
+int Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate & fp_template) const
 {
     fp_template.release();
     const short Max_Nrof_Minutiae = 2*1000; // including virtual minutiae. We only consider top 1000 minutiae including both real and virtual minutiae for each template.
@@ -1083,7 +1083,7 @@ int Matcher::load_FP_template(string tname, RolledFPTemplate & fp_template)
     return 0;
 }
 
-int Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate & fp_template)
+int Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate & fp_template) const
 {
     fp_template.release();
     const short Max_Nrof_Minutiae = 2*1000; // including virtual minutiae. We only consider top 1000 minutiae including both real and virtual minutiae for each template.
