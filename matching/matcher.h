@@ -64,7 +64,6 @@ private:
 
     vector<float> time;
     vector<string> description;
-    int nrof_matching;
     vector<float> table_dist;
     int dist_N;
     int max_nrof_templates;

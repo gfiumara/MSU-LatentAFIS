@@ -33,7 +33,6 @@ Matcher::Matcher(string code_file)
 {
     N = 200;
     time.resize(10);
-    nrof_matching = 0;
     codewords = NULL;
     description.push_back("minutiae similarity");
 
@@ -422,7 +421,6 @@ int Matcher::One2One_matching_selected_templates(LatentFPTemplate &latent_templa
 
 float Matcher::One2One_minutiae_matching(MinutiaeTemplate &latent_minu_template, MinutiaeTemplate &rolled_minu_template, bool save_corr, string corr_file)
 {
-    ++nrof_matching;
     // step 1: compute pairwise similarity between descriptors
 
     int n_time = 0;
@@ -533,8 +531,6 @@ int Matcher::One2One_matching(string latent_file, string rolled_file)
 
 float Matcher::One2One_texture_matching(LatentTextureTemplate &latent_texture_template, RolledTextureTemplatePQ &rolled_texture_template)
 {
-    ++nrof_matching;
-
     // step 1: compute pairwise similarity between descriptors
     int n_time = 0;
     register int i,j,k;
