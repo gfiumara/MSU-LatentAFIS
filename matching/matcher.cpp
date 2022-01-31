@@ -104,7 +104,7 @@ int Matcher::List2List_matching(string latent_path, string rolled_path, string s
     for(fs::directory_iterator dir_itr(latent_path); dir_itr != end_itr; ++dir_itr)
     {
         if(dir_itr->path().extension() == ".dat")
-        { 
+        {
             latent_template_files.push_back(dir_itr->path());
             cout<<"latent template file"<<dir_itr->path()<<endl;
             ++nrof_latents;
@@ -123,7 +123,7 @@ int Matcher::List2List_matching(string latent_path, string rolled_path, string s
     for(fs::directory_iterator dir_itr(rolled_path); dir_itr != end_itr; ++dir_itr)
     {
     if(dir_itr->path().extension() == ".dat")
-        { 
+        {
             rolled_template_files.push_back(dir_itr->path());
             cout<<"rolled template file"<<dir_itr->path()<<endl;
             ++nrof_rolled;
@@ -228,7 +228,7 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
     for(fs::directory_iterator dir_itr(rolled_list_file); dir_itr != end_itr; ++dir_itr)
     {
     if(dir_itr->path().extension() == ".dat")
-        { 
+        {
             rolled_template_files.push_back(dir_itr->path());
             ++nrof_rolled;
         }
@@ -332,7 +332,7 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
         t[1] = high_resolution_clock::now();
         time_span = t[1] - t[0];
         cout<<"Total matching duration (ms): "<<time_span.count()<<endl;
-        
+
     }
     return 0;
 }

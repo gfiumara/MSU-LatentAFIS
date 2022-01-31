@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   matcher_int.h
  * Author: cori
  *
@@ -30,10 +30,10 @@ namespace PQ
 {
     const int MaxNRolledMinu = 1000;
     const int MaxNLatentMinu = 1000;
-    
+
 class Matcher {
 
-    
+
 public:
     Matcher(string code_file);
     int List2List_matching(string latent_list_file, string rolled_list_file, string output_file);
@@ -51,7 +51,7 @@ public:
     int load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu_template);
     Matcher(const Matcher& orig);
     virtual ~Matcher();
-    
+
 private:
     vector<tuple<float, int, int>>  LSS_R_Fast2_Dist(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr=30.0);
     vector<tuple<float, int, int>>  LSS_R_Fast2_Dist_eigen(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr = 30.0);
@@ -61,7 +61,7 @@ private:
 
 private:
     int N; // top N minutiae correspondences for matching
-    
+
     vector<float> time;
     vector<string> description;
     int nrof_matching;
