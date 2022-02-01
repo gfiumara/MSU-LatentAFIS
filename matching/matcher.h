@@ -71,7 +71,6 @@ private:
     int sub_dim;
     float *codewords;
     float a;
-    float similarity_time;
 };
 }
 #endif /* MATCHER_H */

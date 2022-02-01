@@ -715,7 +715,6 @@ float Matcher::One2One_texture_matching(LatentTextureTemplate &latent_texture_te
 
     vector<float> time(10);
     time[n_time-1]+=time_span.count() ;  // minutiae similarity
-    similarity_time += time_span.count() ;
     n_time++;
 
 //
