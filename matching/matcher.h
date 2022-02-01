@@ -38,10 +38,10 @@ public:
     Matcher(string code_file);
     int List2List_matching(string latent_list_file, string rolled_list_file, string output_file);
     int One2List_matching(string latent_template_file, string rolled_list_file, string score_file);
-    float One2One_minutiae_matching(MinutiaeTemplate  &latent_minu_template, MinutiaeTemplate  &rolled_minu_template, bool save_corr = false, string corr_file = "") const;
-    float One2One_texture_matching(LatentTextureTemplate &latent_texture_template, RolledTextureTemplatePQ &rolled_minu_template) const;
-    int One2One_matching_selected_templates(LatentFPTemplate &latent_template, RolledFPTemplate &rolled_template, vector<float> & score, bool save_corr = false, string corr_file = "") const;
-    int One2One_matching_all_templates(LatentFPTemplate &latent_template, RolledFPTemplate &rolled_template, vector<float> & score);
+    float One2One_minutiae_matching(const MinutiaeTemplate  &latent_minu_template, const MinutiaeTemplate  &rolled_minu_template, bool save_corr = false, string corr_file = "") const;
+    float One2One_texture_matching(const LatentTextureTemplate &latent_texture_template, const RolledTextureTemplatePQ &rolled_minu_template) const;
+    int One2One_matching_selected_templates(const LatentFPTemplate &latent_template, const RolledFPTemplate &rolled_template, vector<float> & score, bool save_corr = false, string corr_file = "") const;
+    int One2One_matching_all_templates(const LatentFPTemplate &latent_template, const RolledFPTemplate &rolled_template, vector<float> & score);
     int One2One_matching(string latent_file, string rolled_file);
     int load_single_template(string tname, TextureTemplate& texture_template);
     int load_FP_template(string tname, LatentFPTemplate & fp_template);
@@ -53,10 +53,10 @@ public:
     virtual ~Matcher();
 
 private:
-    vector<tuple<float, int, int>>  LSS_R_Fast2_Dist(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr=30.0) const;
-    vector<tuple<float, int, int>>  LSS_R_Fast2_Dist_eigen(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr = 30.0) const;
-    vector<tuple<float, int, int>>  LSS_R_Fast2_Dist_lookup(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr = 30.0) const;
-    vector<tuple<float, int, int>>  LSS_R_Fast2(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, int d_thr=3) const;
+    vector<tuple<float, int, int>>  LSS_R_Fast2_Dist(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template,const SingleTemplate & rolled_template, float d_thr=30.0) const;
+    vector<tuple<float, int, int>>  LSS_R_Fast2_Dist_eigen(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template, const SingleTemplate & rolled_template, float d_thr = 30.0) const;
+    vector<tuple<float, int, int>>  LSS_R_Fast2_Dist_lookup(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template, const SingleTemplate & rolled_template, float d_thr = 30.0) const;
+    vector<tuple<float, int, int>>  LSS_R_Fast2(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template, const SingleTemplate & rolled_template, int d_thr=3) const;
     float adjust_angle(float angle) const;
 
 private:

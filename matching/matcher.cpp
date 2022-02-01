@@ -335,7 +335,7 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
     return 0;
 }
 
-int Matcher::One2One_matching_all_templates(LatentFPTemplate &latent_template, RolledFPTemplate &rolled_template, vector<float> & score)
+int Matcher::One2One_matching_all_templates(const LatentFPTemplate &latent_template, const RolledFPTemplate &rolled_template, vector<float> & score)
 {
 
     score.resize(latent_template.m_nrof_minu_templates + latent_template.m_nrof_texture_templates);
@@ -373,7 +373,7 @@ int Matcher::One2One_matching_all_templates(LatentFPTemplate &latent_template, R
    return 0;
 }
 
-int Matcher::One2One_matching_selected_templates(LatentFPTemplate &latent_template, RolledFPTemplate &rolled_template, vector<float> & score, bool save_corr, string corr_file)
+int Matcher::One2One_matching_selected_templates(const LatentFPTemplate &latent_template, const RolledFPTemplate &rolled_template, vector<float> & score, bool save_corr, string corr_file)
 const
 {
     score.resize(latent_template.m_nrof_minu_templates + latent_template.m_nrof_texture_templates);
@@ -419,7 +419,7 @@ const
 }
 
 
-float Matcher::One2One_minutiae_matching(MinutiaeTemplate &latent_minu_template, MinutiaeTemplate &rolled_minu_template, bool save_corr, string corr_file)
+float Matcher::One2One_minutiae_matching(const MinutiaeTemplate &latent_minu_template, const MinutiaeTemplate &rolled_minu_template, bool save_corr, string corr_file)
 const
 {
     // step 1: compute pairwise similarity between descriptors
@@ -530,7 +530,7 @@ int Matcher::One2One_matching(string latent_file, string rolled_file)
     return ret;
 }
 
-float Matcher::One2One_texture_matching(LatentTextureTemplate &latent_texture_template, RolledTextureTemplatePQ &rolled_texture_template)
+float Matcher::One2One_texture_matching(const LatentTextureTemplate &latent_texture_template, const RolledTextureTemplatePQ &rolled_texture_template)
 const
 {
     // step 1: compute pairwise similarity between descriptors
@@ -1292,7 +1292,7 @@ Matcher::Matcher(const Matcher& orig)
 
 }
 
-vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr)
+vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template, const SingleTemplate & rolled_template, float d_thr)
 const
 {
     int num = corr.size();
@@ -1419,7 +1419,7 @@ const
     return new_corr;
 }
 
-vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_lookup(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr)
+vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_lookup(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template, const SingleTemplate & rolled_template, float d_thr)
 const
 {
     int num = corr.size();
@@ -1545,7 +1545,7 @@ const
     return new_corr;
 }
 
-vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_eigen(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr)
+vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_eigen(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template, const SingleTemplate & rolled_template, float d_thr)
 const
 {
     int num = corr.size();
@@ -1667,7 +1667,7 @@ const
     return new_corr;
 }
 
-vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, int d_thr)
+vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template, const SingleTemplate & rolled_template, int d_thr)
 const
 {
     int num = corr.size();
