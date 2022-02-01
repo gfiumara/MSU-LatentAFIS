@@ -542,10 +542,8 @@ const
    float simi_matrix[MaxNRolledMinu*MaxNLatentMinu];
    memset(simi_matrix,0,MaxNRolledMinu*MaxNLatentMinu*sizeof(float));
 
-    if(latent_texture_template.m_nrof_minu> MaxNLatentMinu)
-        latent_texture_template.m_nrof_minu = MaxNLatentMinu;
-    if(rolled_texture_template.m_nrof_minu> MaxNRolledMinu)
-        rolled_texture_template.m_nrof_minu = MaxNRolledMinu;
+    const int numLatentMinutiae = std::min(latent_texture_template.m_nrof_minu, MaxNLatentMinu);
+    const int numExemplarMinutiae = std::min(numExemplarMinutiae, MaxNRolledMinu);
 
     float simi = 0.0;
     float *p_latent_des, *p_latent_des0, *p_rolled_des;
@@ -564,10 +562,10 @@ const
     int method = 1;
     if(method == 1)
     {
-        for(i=0; i<latent_texture_template.m_nrof_minu; ++i)
+        for(i=0; i<numLatentMinutiae; ++i)
         {
             p_dist_codewords0 = latent_texture_template.m_dist_codewords + i*nrof_subs*nrof_clusters;
-            for(j=0; j<rolled_texture_template.m_nrof_minu; ++j)
+            for(j=0; j<numExemplarMinutiae; ++j)
             {
                 dist1 = 6.;
                 dist2 = 0.;
@@ -597,10 +595,10 @@ const
     else if (method==2)
     {
         int B1=64, B2 = 64;
-        for(i=0; i<latent_texture_template.m_nrof_minu-B1; i+=B1)
+        for(i=0; i<numLatentMinutiae-B1; i+=B1)
         {
 
-            for(j=0; j<rolled_texture_template.m_nrof_minu-B2; j += B2)
+            for(j=0; j<numExemplarMinutiae-B2; j += B2)
             {
 
                 for(int ii=i; ii<i+B1; ++ii)
@@ -631,7 +629,7 @@ const
                             dist4 -= *(p_dist_codewords1 + code4 + nrof_clusters3);
 
                         }
-                        simi_matrix[ii*rolled_texture_template.m_nrof_minu+jj] = (dist1+dist2)+ (dist3+dist4);
+                        simi_matrix[ii*numExemplarMinutiae+jj] = (dist1+dist2)+ (dist3+dist4);
                     }
                 }
             }
@@ -640,10 +638,10 @@ const
     else if(method == 3)
     {
          int B1=64, B2 = 64;
-        for(i=0; i<latent_texture_template.m_nrof_minu-B1; i+=B1)
+        for(i=0; i<numLatentMinutiae-B1; i+=B1)
         {
             p_dist_codewords0 = latent_texture_template.m_dist_codewords + i*nrof_subs*nrof_clusters;
-            for(j=0; j<rolled_texture_template.m_nrof_minu-B2; j += B2)
+            for(j=0; j<numExemplarMinutiae-B2; j += B2)
             {
                 p_dist_codewords1 = p_dist_codewords0;
                 p_des0 = rolled_texture_template.m_desPQ + j* rolled_texture_template.m_des_length;
@@ -673,7 +671,7 @@ const
                             dist4 -= *(p_dist_codewords2 + code4 + nrof_clusters3);
 
                         }
-                        simi_matrix[ii*rolled_texture_template.m_nrof_minu+jj] = (dist1+dist2)+ (dist3+dist4);
+                        simi_matrix[ii*numExemplarMinutiae+jj] = (dist1+dist2)+ (dist3+dist4);
                         p_des1 +=  rolled_texture_template.m_des_length;
                     }
                     p_dist_codewords1 += nrof_subs*nrof_clusters;
@@ -684,14 +682,14 @@ const
     else if(method==4)
     {
         unsigned char *p_des3=NULL, *p_des2=NULL;
-        for(i=0; i<latent_texture_template.m_nrof_minu; ++i)
+        for(i=0; i<numLatentMinutiae; ++i)
         {
             p_dist_codewords0 = latent_texture_template.m_dist_codewords + i*nrof_subs*nrof_clusters;
             for(k=0; k<nrof_subs; ++k)
             {
-                for(j=0; j<rolled_texture_template.m_nrof_minu-4; j+=4)
+                for(j=0; j<numExemplarMinutiae-4; j+=4)
                 {
-                    n = i*rolled_texture_template.m_nrof_minu + j;
+                    n = i*numExemplarMinutiae + j;
                     p_des0 = rolled_texture_template.m_desPQ + j* rolled_texture_template.m_des_length + k;
                     p_des1 = p_des0 + rolled_texture_template.m_des_length;
                     p_des2 = p_des1 + rolled_texture_template.m_des_length;
@@ -721,18 +719,18 @@ const
     n_time++;
 
 //
-    std::vector<tuple<float, int, int>>tmp_corr(latent_texture_template.m_nrof_minu), corr(N);
+    std::vector<tuple<float, int, int>>tmp_corr(numLatentMinutiae), corr(N);
     float max_val;
     float *psimi = simi_matrix;
     int max_index;
-    for(i=0;i<latent_texture_template.m_nrof_minu; ++i)
+    for(i=0;i<numLatentMinutiae; ++i)
     {
 
-        max_index = std::distance(psimi, std::max_element(psimi, psimi+rolled_texture_template.m_nrof_minu));
+        max_index = std::distance(psimi, std::max_element(psimi, psimi+numExemplarMinutiae));
         max_val = *(psimi + max_index);
         tmp_corr[i] = make_tuple(max_val,i,max_index);
 
-        psimi += rolled_texture_template.m_nrof_minu;
+        psimi += numExemplarMinutiae;
     }
     if(tmp_corr.size()>N)
     {
