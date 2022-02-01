@@ -374,6 +374,7 @@ int Matcher::One2One_matching_all_templates(LatentFPTemplate &latent_template, R
 }
 
 int Matcher::One2One_matching_selected_templates(LatentFPTemplate &latent_template, RolledFPTemplate &rolled_template, vector<float> & score, bool save_corr, string corr_file)
+const
 {
     score.resize(latent_template.m_nrof_minu_templates + latent_template.m_nrof_texture_templates);
     std::fill(score.begin(), score.end(), 0);
@@ -419,6 +420,7 @@ int Matcher::One2One_matching_selected_templates(LatentFPTemplate &latent_templa
 
 
 float Matcher::One2One_minutiae_matching(MinutiaeTemplate &latent_minu_template, MinutiaeTemplate &rolled_minu_template, bool save_corr, string corr_file)
+const
 {
     // step 1: compute pairwise similarity between descriptors
 
@@ -529,6 +531,7 @@ int Matcher::One2One_matching(string latent_file, string rolled_file)
 }
 
 float Matcher::One2One_texture_matching(LatentTextureTemplate &latent_texture_template, RolledTextureTemplatePQ &rolled_texture_template)
+const
 {
     // step 1: compute pairwise similarity between descriptors
     int n_time = 0;
@@ -1292,6 +1295,7 @@ Matcher::Matcher(const Matcher& orig)
 }
 
 vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr)
+const
 {
     int num = corr.size();
     vector<float> H(num*num);
@@ -1418,6 +1422,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist(vector<tuple<float, in
 }
 
 vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_lookup(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr)
+const
 {
     int num = corr.size();
     float *H = new float [num*num]();
@@ -1543,6 +1548,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_lookup(vector<tuple<fl
 }
 
 vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_eigen(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, float d_thr)
+const
 {
     int num = corr.size();
     float *H = new float [num*num]();
@@ -1664,6 +1670,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_eigen(vector<tuple<flo
 }
 
 vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2(vector<tuple<float, int, int>> &corr, SingleTemplate & latent_template, SingleTemplate & rolled_template, int d_thr)
+const
 {
     int num = corr.size();
     vector<bool> H(num*num);
@@ -1831,6 +1838,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2(vector<tuple<float, int, in
 }
 
 float Matcher::adjust_angle(float angle)
+const
 {
     if(angle>PI)
         angle -= 2*PI;
