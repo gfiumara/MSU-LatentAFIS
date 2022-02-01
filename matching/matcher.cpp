@@ -32,7 +32,6 @@ namespace PQ
 Matcher::Matcher(string code_file)
 {
     N = 200;
-    time.resize(10);
     codewords = NULL;
     description.push_back("minutiae similarity");
 
@@ -714,6 +713,7 @@ float Matcher::One2One_texture_matching(LatentTextureTemplate &latent_texture_te
     t[n_time] = high_resolution_clock::now();
     duration<double, std::milli> time_span = t[n_time] - t[n_time-1];
 
+    vector<float> time(10);
     time[n_time-1]+=time_span.count() ;  // minutiae similarity
     similarity_time += time_span.count() ;
     n_time++;

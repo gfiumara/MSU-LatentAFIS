@@ -62,7 +62,6 @@ private:
 private:
     int N; // top N minutiae correspondences for matching
 
-    vector<float> time;
     vector<string> description;
     vector<float> table_dist;
     int dist_N;
