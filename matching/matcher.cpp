@@ -921,6 +921,17 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate
     for(int i=0; i<12; i++){
         is.read(reinterpret_cast<char*>(&header[i]),sizeof(short));
     }
+    /*
+     * FIXME: Seen at least once where a template appears corrupt (possibly
+     *        because an image was too large? it was a palm), so fail fast
+     *        before we trigger a segfault allocating one of the internal
+     *        structures.
+     */
+    static const short expectedHeader[12] = {
+        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    if (memcmp(header, expectedHeader, 12 * sizeof(short)) != 0) {
+    	throw std::runtime_error{"Template appears corrupt (invalid header)"};
+    }
 
     is.read(reinterpret_cast<char*>(&h),sizeof(short));
     is.read(reinterpret_cast<char*>(&w),sizeof(short));
@@ -1125,6 +1136,18 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate
     for(int i=0; i<12; i++){
         is.read(reinterpret_cast<char*>(&header[i]),sizeof(short));
     }
+    /*
+     * FIXME: Seen at least once where a template appears corrupt (possibly
+     *        because an image was too large? it was a palm), so fail fast
+     *        before we trigger a segfault allocating one of the internal
+     *        structures.
+     */
+    static const short expectedHeader[12] = {
+        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    if (memcmp(header, expectedHeader, 12 * sizeof(short)) != 0) {
+    	throw std::runtime_error{"Template appears corrupt (invalid header)"};
+    }
+
     is.read(reinterpret_cast<char*>(&h),sizeof(short));
     is.read(reinterpret_cast<char*>(&w),sizeof(short));
     is.read(reinterpret_cast<char*>(&blkH),sizeof(short));
