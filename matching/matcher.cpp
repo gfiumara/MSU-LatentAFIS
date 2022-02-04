@@ -440,8 +440,8 @@ const
     using namespace std::chrono;
     vector<high_resolution_clock::time_point> t(10);
 
-    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> aa =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(latent_minu_template.m_des,latent_minu_template.m_nrof_minu,des_len);
-    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> bb =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(rolled_minu_template.m_des,rolled_minu_template.m_nrof_minu,des_len);
+    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> aa =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(latent_minu_template.m_des.get(),latent_minu_template.m_nrof_minu,des_len);
+    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> bb =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(rolled_minu_template.m_des.get(),rolled_minu_template.m_nrof_minu,des_len);
 
     MatrixXf  simi_matrix=aa*bb.transpose();
 
@@ -558,6 +558,10 @@ const
     float *p_dist_codewords0 = NULL, *p_dist_codewords1 = NULL, *p_dist_codewords2 =NULL;
     unsigned char *p_des0=NULL, *p_des1=NULL;
 
+    /* Make a copy of the codewords from the latent texture template */
+    std::unique_ptr<float[]> latent_texture_template_m_dist_codewords_copy(new float[latent_texture_template.m_dist_codewords.size()]);
+    std::copy(latent_texture_template.m_dist_codewords.begin(), latent_texture_template.m_dist_codewords.end(), latent_texture_template_m_dist_codewords_copy.get());
+
     int n=0;
     int nrof_clusters3 = nrof_clusters*3, nrof_clusters2 = nrof_clusters*2;
     int method = 1;
@@ -565,7 +569,7 @@ const
     {
         for(i=0; i<numLatentMinutiae; ++i)
         {
-            p_dist_codewords0 = latent_texture_template.m_dist_codewords + i*nrof_subs*nrof_clusters;
+            p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.get() + i*nrof_subs*nrof_clusters;
             for(j=0; j<numExemplarMinutiae; ++j)
             {
                 dist1 = 6.;
@@ -573,7 +577,7 @@ const
                 dist3 = 0.;
                 dist4 = 0.;
                 p_dist_codewords1 = p_dist_codewords0;
-                p_des0 = rolled_texture_template.m_desPQ + j* rolled_texture_template.m_des_length;
+                p_des0 = rolled_texture_template.m_desPQ.get() + j* rolled_texture_template.m_des_length;
                 for(k=0; k<nrof_subs; k+=4, p_dist_codewords1+=4*nrof_clusters)
                 {
                     code1 = *(p_des0+k);
@@ -604,7 +608,7 @@ const
 
                 for(int ii=i; ii<i+B1; ++ii)
                 {
-                    p_dist_codewords0 = latent_texture_template.m_dist_codewords + ii*nrof_subs*nrof_clusters;
+                    p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.get() + ii*nrof_subs*nrof_clusters;
                     for(int jj=j; jj<j+B2; ++jj)
                     {
                        dist1 = 6.;
@@ -612,7 +616,7 @@ const
                        dist3 = 0.;
                        dist4 = 0.;
                        p_dist_codewords1 = p_dist_codewords0;
-                       p_des0 = rolled_texture_template.m_desPQ + jj* rolled_texture_template.m_des_length;
+                       p_des0 = rolled_texture_template.m_desPQ.get() + jj* rolled_texture_template.m_des_length;
 
 
                         for(k=0; k<nrof_subs; k+=4, p_dist_codewords1+=4*nrof_clusters)
@@ -641,11 +645,11 @@ const
          int B1=64, B2 = 64;
         for(i=0; i<numLatentMinutiae-B1; i+=B1)
         {
-            p_dist_codewords0 = latent_texture_template.m_dist_codewords + i*nrof_subs*nrof_clusters;
+            p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.get() + i*nrof_subs*nrof_clusters;
             for(j=0; j<numExemplarMinutiae-B2; j += B2)
             {
                 p_dist_codewords1 = p_dist_codewords0;
-                p_des0 = rolled_texture_template.m_desPQ + j* rolled_texture_template.m_des_length;
+                p_des0 = rolled_texture_template.m_desPQ.get() + j* rolled_texture_template.m_des_length;
                 for(int ii=i; ii<i+B1; ++ii)
                 {
                     p_des1 = p_des0;
@@ -685,13 +689,13 @@ const
         unsigned char *p_des3=NULL, *p_des2=NULL;
         for(i=0; i<numLatentMinutiae; ++i)
         {
-            p_dist_codewords0 = latent_texture_template.m_dist_codewords + i*nrof_subs*nrof_clusters;
+            p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.get() + i*nrof_subs*nrof_clusters;
             for(k=0; k<nrof_subs; ++k)
             {
                 for(j=0; j<numExemplarMinutiae-4; j+=4)
                 {
                     n = i*numExemplarMinutiae + j;
-                    p_des0 = rolled_texture_template.m_desPQ + j* rolled_texture_template.m_des_length + k;
+                    p_des0 = rolled_texture_template.m_desPQ.get() + j* rolled_texture_template.m_des_length + k;
                     p_des1 = p_des0 + rolled_texture_template.m_des_length;
                     p_des2 = p_des1 + rolled_texture_template.m_des_length;
                     p_des3 = p_des2 + rolled_texture_template.m_des_length;
@@ -1254,7 +1258,7 @@ int Matcher::load_single_template(string tname, TextureTemplate& texture_templat
         is.read(reinterpret_cast<char*>(feature.get()),sizeof(float)*nrof_minutiae);
     }
 
-    is.read(reinterpret_cast<char*>(texture_template.m_des),sizeof(float)*nrof_minutiae*des_len);
+    is.read(reinterpret_cast<char*>(texture_template.m_des.get()),sizeof(float)*nrof_minutiae*des_len);
 
 
     is.close();
@@ -1306,7 +1310,7 @@ int Matcher::load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu
         is.read(reinterpret_cast<char*>(feature),sizeof(float)*nrof_minutiae);
     }
 
-    is.read(reinterpret_cast<char*>(minu_template.m_desPQ),sizeof(unsigned char)*nrof_minutiae*des_len);
+    is.read(reinterpret_cast<char*>(minu_template.m_desPQ.get()),sizeof(unsigned char)*nrof_minutiae*des_len);
 
     is.close();
 

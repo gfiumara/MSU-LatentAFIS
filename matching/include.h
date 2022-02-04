@@ -44,9 +44,9 @@ class SingleTemplate
         int m_block_size;
         int m_blkH;
         int m_blkW;
-        float * m_des;
-        MinuPoint * m_minutiae;
-        float *m_oimg;
+        std::unique_ptr<float[]> m_des;
+        std::unique_ptr<MinuPoint[]> m_minutiae;
+       std::unique_ptr<float[]> m_oimg;
         TemplateType m_template_type;
         SingleTemplate()
         {
@@ -63,8 +63,8 @@ class SingleTemplate
         };
         SingleTemplate(const int nrof_minutiae, const int des_length):m_nrof_minu(nrof_minutiae),m_des_length(des_length)
         {     
-            m_des = new float[m_nrof_minu*m_des_length]();
-            m_minutiae = new MinuPoint[m_nrof_minu]();
+            m_des.reset(new float[m_nrof_minu*m_des_length]());
+            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
         
@@ -74,8 +74,8 @@ class SingleTemplate
         {
             m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
-            m_des = new float[m_nrof_minu*m_des_length]();
-            m_minutiae = new MinuPoint[m_nrof_minu]();
+            m_des.reset(new float[m_nrof_minu*m_des_length]());
+            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
         
@@ -84,22 +84,22 @@ class SingleTemplate
             m_nrof_minu = temp.m_nrof_minu;
             m_des_length = temp.m_des_length;
             //copy minutiae descriptor
-            m_des = new float[m_nrof_minu*m_des_length]();
-            memcpy (m_des, temp.m_des, sizeof(float)*m_nrof_minu*m_des_length);
-            m_minutiae = new MinuPoint[m_nrof_minu]();
-            memcpy (m_minutiae, temp.m_minutiae, sizeof(MinuPoint)*m_nrof_minu);
+            m_des.reset(new float[m_nrof_minu*m_des_length]());
+            memcpy (m_des.get(), temp.m_des.get(), sizeof(float)*m_nrof_minu*m_des_length);
+            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
+            memcpy (m_minutiae.get(), temp.m_minutiae.get(), sizeof(MinuPoint)*m_nrof_minu);
             m_block_size = 16;
             
             m_template_type = temp.m_template_type;
-            m_oimg = NULL;
+            m_oimg.reset(NULL);
             m_blkH = 0;
             m_blkW = 0;
             if(m_template_type==TemplateType::Minutiae)
             {
                 m_blkH = temp.m_blkH;
                 m_blkW = temp.m_blkW;
-                m_oimg = new float[m_blkH*m_blkW]();
-                memcpy (m_oimg, temp.m_oimg, sizeof(float)*m_blkH*m_blkW);
+                m_oimg.reset(new float[m_blkH*m_blkW]());
+                memcpy (m_oimg.get(), temp.m_oimg.get(), sizeof(float)*m_blkH*m_blkW);
             }
         };
         SingleTemplate& operator=(const SingleTemplate &temp)
@@ -107,21 +107,21 @@ class SingleTemplate
             m_nrof_minu = temp.m_nrof_minu;
             m_des_length = temp.m_des_length;
             //copy minutiae descriptor
-            m_des = new float[m_nrof_minu*m_des_length]();
-            memcpy (m_des, temp.m_des, sizeof(float)*m_nrof_minu*m_des_length);
-            m_minutiae = new MinuPoint[m_nrof_minu]();
-            memcpy (m_minutiae, temp.m_minutiae, sizeof(MinuPoint)*m_nrof_minu);
+            m_des.reset(new float[m_nrof_minu*m_des_length]());
+            memcpy (m_des.get(), temp.m_des.get(), sizeof(float)*m_nrof_minu*m_des_length);
+            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
+            memcpy (m_minutiae.get(), temp.m_minutiae.get(), sizeof(MinuPoint)*m_nrof_minu);
             m_block_size = 16;
             
             m_template_type = temp.m_template_type;
-            m_oimg = NULL;
+            m_oimg.reset(NULL);
             m_blkH = 0;
             m_blkW = 0;
             if(m_template_type==TemplateType::Texture)
             {
                 m_blkH = temp.m_blkH;
                 m_blkW = temp.m_blkW;
-                m_oimg = new float[m_nrof_minu*m_des_length]();
+                m_oimg.reset(new float[m_nrof_minu*m_des_length]());
             }
         }
         ~ SingleTemplate()
@@ -130,21 +130,6 @@ class SingleTemplate
             m_nrof_feature = 0;
             m_des_length = 0;
             m_block_size = 0;
-            if(m_des)
-            {
-                delete [] m_des;
-                m_des = NULL;
-            }
-            if(m_minutiae)
-            {
-                delete [] m_minutiae;
-                m_minutiae = NULL;
-            }
-            if(m_oimg)
-            {
-                delete [] m_oimg;
-                m_oimg = NULL;
-            }
         };
         void release(void)
         {
@@ -152,21 +137,6 @@ class SingleTemplate
             m_nrof_feature = 0;
             m_des_length = 0;
             m_block_size = 0;
-            if(m_des)
-            {
-                delete [] m_des;
-                m_des = NULL;
-            }
-            if(m_minutiae)
-            {
-                delete [] m_minutiae;
-                m_minutiae = NULL;
-            }
-            if(m_oimg)
-            {
-                delete [] m_oimg;
-                m_oimg = NULL;
-            }
         }
         void set_x(const short *x)
         {
@@ -177,7 +147,7 @@ class SingleTemplate
         }
         void set_y(const short *y)
         {
-            MinuPoint * pMinutiae = m_minutiae;
+            MinuPoint * pMinutiae = m_minutiae.get();
             for(int i=0;i<m_nrof_minu; ++i,++pMinutiae)
             {
                 pMinutiae->y = y[i];
@@ -185,7 +155,7 @@ class SingleTemplate
         };
         void set_ori(const float *ori)
         {
-            MinuPoint * pMinutiae = m_minutiae;
+            MinuPoint * pMinutiae = m_minutiae.get();
             for(int i=0;i<m_nrof_minu; ++i,++pMinutiae)
             {
                 pMinutiae->ori = ori[i];
@@ -195,7 +165,7 @@ class SingleTemplate
             m_template_type = template_type;
         };
         void init_des(){
-            m_des = new float[m_nrof_minu*m_des_length]();
+            m_des.reset(new float[m_nrof_minu*m_des_length]());
         }
 
 };
@@ -221,7 +191,7 @@ class MinutiaeTemplate:public SingleTemplate{
             SingleTemplate::m_blkW = blkW;
             
             // minutiae descriptor
-            memcpy (m_des, des, sizeof(float)*m_nrof_minu*m_des_length);
+            memcpy (m_des.get(), des, sizeof(float)*m_nrof_minu*m_des_length);
             
             // minutiae
             set_x(x);
@@ -231,8 +201,8 @@ class MinutiaeTemplate:public SingleTemplate{
             m_oimg = NULL;
             
             // orientation field 
-            m_oimg = new float[m_blkH*m_blkW]();
-            memcpy (m_oimg, oimg, sizeof(float)*m_blkH*m_blkW);
+            m_oimg.reset(new float[m_blkH*m_blkW]());
+            memcpy (m_oimg.get(), oimg, sizeof(float)*m_blkH*m_blkW);
             
         };
         void initialization(const int nrof_minutiae, const int des_length)
@@ -240,8 +210,8 @@ class MinutiaeTemplate:public SingleTemplate{
             // release();
             m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
-            m_des = new float[m_nrof_minu*m_des_length]();
-            m_minutiae = new MinuPoint[m_nrof_minu]();
+            m_des.reset(new float[m_nrof_minu*m_des_length]());
+            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
         
@@ -270,7 +240,7 @@ class TextureTemplate: public SingleTemplate
             m_template_type = TemplateType::Texture;
             
             if(des){
-                memcpy(m_des, des, sizeof(float)*m_nrof_minu*m_des_length);
+                memcpy(m_des.get(), des, sizeof(float)*m_nrof_minu*m_des_length);
             }
             set_x(x);
             set_y(y);
@@ -284,8 +254,8 @@ class TextureTemplate: public SingleTemplate
         {
             m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
-            m_des = new float[m_nrof_minu*m_des_length]();
-            m_minutiae = new MinuPoint[m_nrof_minu]();
+            m_des.reset(new float[m_nrof_minu*m_des_length]());
+            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
         
@@ -298,16 +268,16 @@ class TextureTemplate: public SingleTemplate
 class LatentTextureTemplate: public TextureTemplate
 {
     public:
-        float *m_dist_codewords;
+        std::vector<float> m_dist_codewords;
         LatentTextureTemplate()
         {
-            m_dist_codewords = NULL;
+            m_dist_codewords.clear();
         };
         LatentTextureTemplate(const int nrof_minutiae, const int des_length):TextureTemplate(nrof_minutiae,des_length)
         {
            
-            m_des = new float[m_nrof_minu*m_des_length]();
-            m_minutiae = new MinuPoint[m_nrof_minu]();
+            m_des.reset(new float[m_nrof_minu*m_des_length]());
+            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
         LatentTextureTemplate(const int nrof_minutiae, const short *x,const short *y,const float *ori, const int des_length, const float *des):
@@ -318,15 +288,15 @@ class LatentTextureTemplate: public TextureTemplate
         {
             m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
-            m_des = new float[m_nrof_minu*m_des_length]();
+            m_des.reset(new float[m_nrof_minu*m_des_length]());
            
-            m_minutiae = new MinuPoint[m_nrof_minu]();
+            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
         
          void compute_dist_to_codewords( float *codewords, const int nrof_subs, const int sub_dim,  const int nrof_clusters)
         {
-            m_dist_codewords = new float[m_nrof_minu*nrof_subs*nrof_clusters](); 
+            m_dist_codewords.resize(m_nrof_minu*nrof_subs*nrof_clusters);
             
             float *pdes0, *pdes1, *pdes2; 
             float *pword0, *pword1, *pword2;
@@ -334,7 +304,7 @@ class LatentTextureTemplate: public TextureTemplate
             float dist = 0.0;
             for(i=0; i<m_nrof_minu ; ++i)
             {
-                pdes0 = m_des +  i*m_des_length;
+                pdes0 = m_des.get() +  i*m_des_length;
                 
                 for(j=0;j<nrof_subs ; ++j)
                 {
@@ -366,7 +336,7 @@ class LatentTextureTemplate: public TextureTemplate
 class RolledTextureTemplatePQ:public TextureTemplate
 {
     public:
-        unsigned char * m_desPQ;
+        std::unique_ptr<unsigned char[]> m_desPQ;
         RolledTextureTemplatePQ()
         {
             m_nrof_minu = 0;
@@ -379,7 +349,7 @@ class RolledTextureTemplatePQ:public TextureTemplate
         RolledTextureTemplatePQ(const int nrof_minutiae, const int des_length):TextureTemplate(nrof_minutiae, des_length)
         {
            
-            m_desPQ = new unsigned char[m_nrof_minu*m_des_length]();
+            m_desPQ.reset(new unsigned char[m_nrof_minu*m_des_length]());
         };
         
         RolledTextureTemplatePQ(const RolledTextureTemplatePQ & input_template)
@@ -390,27 +360,27 @@ class RolledTextureTemplatePQ:public TextureTemplate
             m_block_size = input_template.m_block_size;
             m_block_size = input_template.m_block_size;
                     
-            m_desPQ = new unsigned char[m_nrof_minu*m_des_length]();
-            memcpy(m_desPQ, input_template.m_desPQ, sizeof(unsigned char)*m_nrof_minu*m_des_length);
+            m_desPQ.reset(new unsigned char[m_nrof_minu*m_des_length]());
+            memcpy(m_desPQ.get(), input_template.m_desPQ.get(), sizeof(unsigned char)*m_nrof_minu*m_des_length);
             
-            m_minutiae = new MinuPoint[m_nrof_minu]();
-            memcpy(m_minutiae, input_template.m_minutiae, sizeof(MinuPoint)*m_nrof_minu);
+            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
+            memcpy(m_minutiae.get(), input_template.m_minutiae.get(), sizeof(MinuPoint)*m_nrof_minu);
         };
         
         
         RolledTextureTemplatePQ(const int nrof_minutiae, const short *x,const short *y,const float *ori, const int des_length, const float *des):
         TextureTemplate(nrof_minutiae, x, y, ori, des_length, NULL)
         {
-            m_desPQ = new unsigned char[m_nrof_minu*m_des_length]();
-            memcpy(m_desPQ, des, sizeof(char)*m_nrof_minu*m_des_length);
+            m_desPQ.reset(new unsigned char[m_nrof_minu*m_des_length]());
+            memcpy(m_desPQ.get(), des, sizeof(char)*m_nrof_minu*m_des_length);
         };
         void initialization(const int nrof_minutiae, const int des_length)
         {
             // release();
             m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
-            m_desPQ = new unsigned char[m_nrof_minu*m_des_length]();
-            m_minutiae = new MinuPoint[m_nrof_minu]();
+            m_desPQ.reset(new unsigned char[m_nrof_minu*m_des_length]());
+            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
         
@@ -420,21 +390,6 @@ class RolledTextureTemplatePQ:public TextureTemplate
             m_nrof_feature = 0;
             m_des_length = 0;
             m_block_size = 0;
-            if(m_des)
-            {
-                delete [] m_des;
-                m_des = NULL;
-            }
-            if(m_minutiae)
-            {
-                delete [] m_minutiae;
-                m_minutiae = NULL;
-            }
-            if(m_desPQ)
-            {
-                delete [] m_desPQ;
-                m_desPQ = NULL;
-            }
         };
         void release(void)
         {
@@ -442,21 +397,6 @@ class RolledTextureTemplatePQ:public TextureTemplate
             m_nrof_feature = 0;
             m_des_length = 0;
             m_block_size = 0;
-            if(m_des)
-            {
-                delete [] m_des;
-                m_des = NULL;
-            }
-            if(m_minutiae)
-            {
-                delete [] m_minutiae;
-                m_minutiae = NULL;
-            }
-            if(m_desPQ)
-            {
-                delete [] m_desPQ;
-                m_desPQ = NULL;
-            }
         }
         void set_x(short *x)
         {
@@ -467,7 +407,7 @@ class RolledTextureTemplatePQ:public TextureTemplate
         }
         void set_y(short *y)
         {
-            MinuPoint * pMinutiae = m_minutiae;
+            MinuPoint * pMinutiae = m_minutiae.get();
             for(int i=0;i<m_nrof_minu; ++i,++pMinutiae)
             {
                 pMinutiae->y = y[i];
@@ -475,7 +415,7 @@ class RolledTextureTemplatePQ:public TextureTemplate
         };
         void set_ori(float *ori)
         {
-            MinuPoint * pMinutiae = m_minutiae;
+            MinuPoint * pMinutiae = m_minutiae.get();
             for(int i=0;i<m_nrof_minu; ++i,++pMinutiae)
             {
                 pMinutiae->ori = ori[i];
