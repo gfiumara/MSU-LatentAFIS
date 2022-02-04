@@ -882,7 +882,7 @@ int Matcher::load_FP_template(string tname, LatentFPTemplate & fp_template)
     return 0;
 }
 
-int Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate & fp_template) const
+void Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate & fp_template) const
 {
     fp_template.release();
     const short Max_Nrof_Minutiae = 2*1000; // including virtual minutiae. We only consider top 1000 minutiae including both real and virtual minutiae for each template.
@@ -899,7 +899,7 @@ int Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate 
 
     if( length<=0 )
     {
-        return 1;
+            throw std::runtime_error{"Length of latent template is 0"};
     }
     is.seekg(0, ios::beg);
     short header[12];
@@ -938,13 +938,15 @@ int Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate 
             continue;
         if(nrof_minutiae>Max_Nrof_Minutiae)
         {
-            cout<<"Number of minutiae is larger than Max Number of Minutiae (latent):"<< nrof_minutiae << ">"<<Max_Nrof_Minutiae<<endl;
-            return 2;
+            throw std::runtime_error{"Number of minutiae is larger than "
+                "Max Number of Minutiae (latent): " +
+                std::to_string(nrof_minutiae) + ">" +
+                std::to_string(Max_Nrof_Minutiae)};
         }
         if(blkH>Max_BlkSize || blkW>Max_BlkSize)
         {
-            cout<<"The size of the ridge flow is larger than maximum size:"<< Max_BlkSize<<endl;
-            return 4;
+            throw std::runtime_error{"The size of the ridge flow is larger "
+                "than maximum size: " + std::to_string(Max_BlkSize)};
         }
         is.read(reinterpret_cast<char*>(x),sizeof(short)*nrof_minutiae);
         is.read(reinterpret_cast<char*>(y),sizeof(short)*nrof_minutiae);
@@ -966,8 +968,9 @@ int Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate 
             continue;
         if(nrof_minutiae>Max_Nrof_Minutiae)
         {
-            cout<<"Number of minutiae is larger than Max Number of Minutiae:"<< nrof_minutiae << ">"<< Max_Nrof_Minutiae<<endl;
-            return -1;
+            throw std::runtime_error{"Number of minutiae is larger than Max "
+                "Number of Minutiae: " + std::to_string(nrof_minutiae) + ">" +
+                std::to_string(Max_Nrof_Minutiae)};
         }
         is.read(reinterpret_cast<char*>(x),sizeof(short)*nrof_minutiae);
         is.read(reinterpret_cast<char*>(y),sizeof(short)*nrof_minutiae);
@@ -980,8 +983,6 @@ int Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate 
         texture_template.compute_dist_to_codewords(codewords, nrof_subs,  sub_dim,  nrof_clusters);
         fp_template.add_texture_template(texture_template);
     }
-
-    return 0;
 }
 
 int Matcher::load_FP_template(string tname, RolledFPTemplate & fp_template)
@@ -1083,7 +1084,7 @@ int Matcher::load_FP_template(string tname, RolledFPTemplate & fp_template)
     return 0;
 }
 
-int Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate & fp_template) const
+void Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate & fp_template) const
 {
     fp_template.release();
     const short Max_Nrof_Minutiae = 2*1000; // including virtual minutiae. We only consider top 1000 minutiae including both real and virtual minutiae for each template.
@@ -1100,7 +1101,8 @@ int Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate 
 
     if( length<=10 )
     {
-        return 1;
+        throw std::runtime_error{"Size of rolled template is " +
+            std::to_string(length) + " (<= 10)"};
     }
     is.seekg(0, ios::beg);
     short header[12];
@@ -1139,13 +1141,14 @@ int Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate 
             continue;
         if(nrof_minutiae>Max_Nrof_Minutiae)
         {
-            cout<<"Number of minutiae is larger than Max Number of Minutiae:"<< nrof_minutiae << ">"<< Max_Nrof_Minutiae<<endl;
-            return 2;
+            throw std::runtime_error{"Number of minutiae is larger than Max "
+                "Number of Minutiae: " + std::to_string(nrof_minutiae) + ">" +
+                std::to_string(Max_Nrof_Minutiae)};
         }
         if(blkH>Max_BlkSize || blkW>Max_BlkSize)
         {
-            cout<<"The size of the ridge flow is larger than maximum size:"<< Max_BlkSize<<endl;
-            return 4;
+            throw std::runtime_error{"The size of the ridge flow is larger "
+                "than maximum size: " + std::to_string(Max_BlkSize)};
         }
         is.read(reinterpret_cast<char*>(x),sizeof(short)*nrof_minutiae);
         is.read(reinterpret_cast<char*>(y),sizeof(short)*nrof_minutiae);
@@ -1167,7 +1170,9 @@ int Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate 
             continue;
         if(nrof_minutiae>Max_Nrof_Minutiae)
         {
-            cout<<"Number of minutiae is larger than Max Number of Minutiae:"<< nrof_minutiae << ">"<< Max_Nrof_Minutiae<<endl;
+            throw std::runtime_error{"Number of minutiae is larger than Max "
+                "Number of Minutiae: " + std::to_string(nrof_minutiae) + ">" +
+                std::to_string(Max_Nrof_Minutiae)};
             return -1;
         }
         is.read(reinterpret_cast<char*>(x),sizeof(short)*nrof_minutiae);
@@ -1179,8 +1184,6 @@ int Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate 
         RolledTextureTemplatePQ texture_template(nrof_minutiae,x,y,ori,des_len,des);
         fp_template.add_texture_template(texture_template);
     }
-
-    return 0;
 }
 
 int Matcher::load_single_template(string tname, TextureTemplate& texture_template)
