@@ -70,7 +70,6 @@ private:
     int nrof_clusters;
     int sub_dim;
     std::unique_ptr<float[]> codewords{};
-    float a;
 };
 }
 #endif /* MATCHER_H */
