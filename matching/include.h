@@ -123,6 +123,8 @@ class SingleTemplate
                 m_blkW = temp.m_blkW;
                 m_oimg.reset(new float[m_nrof_minu*m_des_length]());
             }
+
+            return (*this);
         }
         ~ SingleTemplate()
         {
