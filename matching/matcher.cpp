@@ -115,7 +115,7 @@ int Matcher::List2List_matching(string latent_path, string rolled_path, string s
         return -1;
     }
 
-    register int i,j,k;
+    int i,j,k;
 
     int nrof_rolled = 0;
     vector<fs::path> rolled_template_files;
@@ -216,7 +216,7 @@ int Matcher::List2List_matching(string latent_path, string rolled_path, string s
 int Matcher::One2List_matching(string latent_template_file_string, string rolled_list_file, string score_path)
 {
 
-    register int i,j,k;
+    int i,j,k;
 
     fs::path latent_template_file(latent_template_file_string);
     string score_file = score_path + latent_template_file.stem().string() + ".csv";
@@ -426,7 +426,7 @@ const
     // step 1: compute pairwise similarity between descriptors
 
     int n_time = 0;
-    register int i,j,k;
+    int i,j,k;
 
     int des_len = rolled_minu_template.m_des_length;
     if(des_len!=latent_minu_template.m_des_length){
@@ -536,7 +536,7 @@ const
 {
     // step 1: compute pairwise similarity between descriptors
     int n_time = 0;
-    register int i,j,k;
+    int i,j,k;
 
     int des_len = rolled_texture_template.m_des_length;
 
@@ -553,8 +553,8 @@ const
     vector<high_resolution_clock::time_point> t(10);
 
     t[n_time++] = high_resolution_clock::now();
-    register float dist0=0.0, dist1= 0.0, dist2= 0, dist3=0.0, dist4 = 0.0; //, dist5, dist6,dist7, dist8;
-    register int code1 = 0, code2 = 0, code3 = 0, code4=0;
+    float dist0=0.0, dist1= 0.0, dist2= 0, dist3=0.0, dist4 = 0.0; //, dist5, dist6,dist7, dist8;
+    int code1 = 0, code2 = 0, code3 = 0, code4=0;
     float *p_dist_codewords0 = NULL, *p_dist_codewords1 = NULL, *p_dist_codewords2 =NULL;
     unsigned char *p_des0=NULL, *p_des1=NULL;
 
@@ -1332,7 +1332,7 @@ const
 
     vector<short> flag_latent(latent_template.m_nrof_minu),flag_rolled(rolled_template.m_nrof_minu);
 
-    register int i,j,k;
+    int i,j,k;
 
     MinuPoint *p_latent_minutia_1, *p_latent_minutia_2, *p_rolled_minutia_1, *p_rolled_minutia_2;
     float dist_1, dist_2, dist;
@@ -1458,7 +1458,7 @@ const
     std::unique_ptr<float[]> H{new float [num*num]()};
     vector<short> flag_latent(latent_template.m_nrof_minu),flag_rolled(rolled_template.m_nrof_minu);
 
-    register int i,j,k;
+    int i,j,k;
 
     MinuPoint *p_latent_minutia_1, *p_latent_minutia_2, *p_rolled_minutia_1, *p_rolled_minutia_2;
     float dist_1, dist_2, dist;
@@ -1584,7 +1584,7 @@ const
 
     vector<short> flag_latent(latent_template.m_nrof_minu),flag_rolled(rolled_template.m_nrof_minu);
 
-    register int i,j,k;
+    int i,j,k;
 
     MinuPoint *p_latent_minutia_1, *p_latent_minutia_2, *p_rolled_minutia_1, *p_rolled_minutia_2;
     float dist_1, dist_2, dist;
@@ -1704,7 +1704,7 @@ const
     vector<bool> H(num*num);
     vector<short> flag_latent(latent_template.m_nrof_minu),flag_rolled(rolled_template.m_nrof_minu);
 
-    register int i,j,k;
+    int i,j,k;
 
     MinuPoint *p_latent_minutia_1, *p_latent_minutia_2, *p_rolled_minutia_1, *p_rolled_minutia_2;
     float dist_1, dist_2;
