@@ -10,6 +10,7 @@
 #include <fstream>
 #include <iomanip>
 #include <algorithm>
+#include <memory>
 #include <tuple>
 #include <vector>
 #include <math.h>
@@ -1242,16 +1243,16 @@ int Matcher::load_single_template(string tname, TextureTemplate& texture_templat
     texture_template.set_y(loc);
 
     delete [] loc; loc = NULL;
+    std::unique_ptr<float[]> feature{new float[nrof_minutiae]};
 
-    float *feature = new float [nrof_minutiae];
+    is.read(reinterpret_cast<char*>(feature.get()),sizeof(float)*nrof_minutiae);
+    texture_template.set_ori(feature.get());
 
-    is.read(reinterpret_cast<char*>(feature),sizeof(float)*nrof_minutiae);
-    texture_template.set_ori(feature);
 
     for(int i=3; i<nrof_minutiae_feature; ++i)
     {
         // read addition features. But they are not useful here
-        is.read(reinterpret_cast<char*>(feature),sizeof(float)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(feature.get()),sizeof(float)*nrof_minutiae);
     }
 
     is.read(reinterpret_cast<char*>(texture_template.m_des),sizeof(float)*nrof_minutiae*des_len);
