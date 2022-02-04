@@ -1173,7 +1173,6 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate
             throw std::runtime_error{"Number of minutiae is larger than Max "
                 "Number of Minutiae: " + std::to_string(nrof_minutiae) + ">" +
                 std::to_string(Max_Nrof_Minutiae)};
-            return -1;
         }
         is.read(reinterpret_cast<char*>(x),sizeof(short)*nrof_minutiae);
         is.read(reinterpret_cast<char*>(y),sizeof(short)*nrof_minutiae);
