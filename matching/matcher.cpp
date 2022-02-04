@@ -889,9 +889,13 @@ int Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate 
     const short Max_Des_Length = 192;
     const short Max_BlkSize = 100;
 
-    std::istringstream is{reinterpret_cast<const char *>(buf.data()),
+    std::istringstream is{
+        {reinterpret_cast<const char *>(buf.data()), buf.size()},
         std::istringstream::binary};
-    int length = buf.size();
+
+    // get length of file:
+    is.seekg(0, ios::end);
+    int length = is.tellg();
 
     if( length<=0 )
     {
@@ -1086,7 +1090,8 @@ int Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate 
     const short Max_Des_Length = 192;
     const short Max_BlkSize = 100;
 
-    std::istringstream is{reinterpret_cast<const char *>(buf.data()),
+    std::istringstream is{
+        {reinterpret_cast<const char *>(buf.data()), buf.size()},
         std::istringstream::binary};
 
     // get length of file:
