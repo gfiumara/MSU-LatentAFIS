@@ -81,8 +81,8 @@ Matcher::Matcher(string code_file)
         cout<<"codebook is empty!"<<endl;
     }
 
-    codewords = new float[len];
-    float *pword = codewords;
+    codewords.reset(new float[len]);
+    float *pword = codewords.get();
     for(int i=0;i<nrof_subs; ++i)
     {
         for(int j=0; j<nrof_clusters; ++j)
@@ -875,7 +875,7 @@ int Matcher::load_FP_template(string tname, LatentFPTemplate & fp_template)
 
 
         LatentTextureTemplate texture_template(nrof_minutiae,x,y,ori,des_len,des);
-        texture_template.compute_dist_to_codewords(codewords, nrof_subs,  sub_dim,  nrof_clusters);
+        texture_template.compute_dist_to_codewords(codewords.get(), nrof_subs,  sub_dim,  nrof_clusters);
         fp_template.add_texture_template(texture_template);
     }
     is.close();
@@ -992,7 +992,7 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate
 
 
         LatentTextureTemplate texture_template(nrof_minutiae,x,y,ori,des_len,des);
-        texture_template.compute_dist_to_codewords(codewords, nrof_subs,  sub_dim,  nrof_clusters);
+        texture_template.compute_dist_to_codewords(codewords.get(), nrof_subs,  sub_dim,  nrof_clusters);
         fp_template.add_texture_template(texture_template);
     }
 }
@@ -1235,14 +1235,13 @@ int Matcher::load_single_template(string tname, TextureTemplate& texture_templat
         return -1; // number of minutiae feature is not sufficient.
     texture_template.initialization(nrof_minutiae,des_len);
 
-    short *loc = new short [nrof_minutiae];
-    is.read(reinterpret_cast<char*>(loc),sizeof(short)*nrof_minutiae);
-    texture_template.set_x(loc);
+    std::unique_ptr<short[]> loc{new short[nrof_minutiae]};
+    is.read(reinterpret_cast<char*>(loc.get()),sizeof(short)*nrof_minutiae);
+    texture_template.set_x(loc.get());
 
-    is.read(reinterpret_cast<char*>(loc),sizeof(short)*nrof_minutiae);
-    texture_template.set_y(loc);
+    is.read(reinterpret_cast<char*>(loc.get()),sizeof(short)*nrof_minutiae);
+    texture_template.set_y(loc.get());
 
-    delete [] loc; loc = NULL;
     std::unique_ptr<float[]> feature{new float[nrof_minutiae]};
 
     is.read(reinterpret_cast<char*>(feature.get()),sizeof(float)*nrof_minutiae);
@@ -1290,14 +1289,12 @@ int Matcher::load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu
         return -1; // number of minutiae feature is not sufficient.
     minu_template.initialization(nrof_minutiae,des_len);
 
-    short *loc = new short [nrof_minutiae];
-    is.read(reinterpret_cast<char*>(loc),sizeof(short)*nrof_minutiae);
-    minu_template.set_x(loc);
+    std::unique_ptr<short[]> loc{new short [nrof_minutiae]};
+    is.read(reinterpret_cast<char*>(loc.get()),sizeof(short)*nrof_minutiae);
+    minu_template.set_x(loc.get());
 
-    is.read(reinterpret_cast<char*>(loc),sizeof(short)*nrof_minutiae);
-    minu_template.set_y(loc);
-
-    delete [] loc; loc = NULL;
+    is.read(reinterpret_cast<char*>(loc.get()),sizeof(short)*nrof_minutiae);
+    minu_template.set_y(loc.get());
 
      float feature[100000];
      is.read(reinterpret_cast<char*>(feature),sizeof(float)*nrof_minutiae);
@@ -1454,7 +1451,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_lookup(vector<tuple<fl
 const
 {
     int num = corr.size();
-    float *H = new float [num*num]();
+    std::unique_ptr<float[]> H{new float [num*num]()};
     vector<short> flag_latent(latent_template.m_nrof_minu),flag_rolled(rolled_template.m_nrof_minu);
 
     register int i,j,k;
@@ -1503,7 +1500,7 @@ const
         }
     }
 
-    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> aa =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(H,num,num);
+    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> aa =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(H.get(),num,num);
 
     float sum = 0.0;
     VectorXf b(num);
@@ -1572,7 +1569,6 @@ const
         }
     }
 
-    delete [] H; H=NULL;
     return new_corr;
 }
 
@@ -1580,7 +1576,7 @@ vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist_eigen(vector<tuple<flo
 const
 {
     int num = corr.size();
-    float *H = new float [num*num]();
+    std::unique_ptr<float[]> H{new float [num*num]()};
 
     vector<short> flag_latent(latent_template.m_nrof_minu),flag_rolled(rolled_template.m_nrof_minu);
 
@@ -1626,7 +1622,7 @@ const
         }
     }
 
-    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> aa =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(H,num,num);
+    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> aa =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(H.get(),num,num);
 
     float sum = 0.0;
     VectorXf b(num);
@@ -1694,7 +1690,6 @@ const
         }
     }
 
-     delete [] H; H=NULL;
     return new_corr;
 }
 
@@ -1876,14 +1871,5 @@ const
         angle += 2*PI;
     }
     return angle;
-}
-
-Matcher::~Matcher()
-{
-    if(codewords!=NULL)
-    {
-        delete [] codewords;
-        codewords = NULL;
-    }
 }
 }
