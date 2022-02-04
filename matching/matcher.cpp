@@ -544,7 +544,7 @@ const
    memset(simi_matrix,0,MaxNRolledMinu*MaxNLatentMinu*sizeof(float));
 
     const int numLatentMinutiae = std::min(latent_texture_template.m_nrof_minu, MaxNLatentMinu);
-    const int numExemplarMinutiae = std::min(numExemplarMinutiae, MaxNRolledMinu);
+    const int numExemplarMinutiae = std::min(rolled_texture_template.m_nrof_minu, MaxNRolledMinu);
 
     float simi = 0.0;
     float *p_latent_des, *p_latent_des0, *p_rolled_des;
