@@ -354,7 +354,8 @@ class RolledTextureTemplatePQ:public TextureTemplate
             m_desPQ.reset(new unsigned char[m_nrof_minu*m_des_length]());
         };
 
-        RolledTextureTemplatePQ(const RolledTextureTemplatePQ & input_template)
+        RolledTextureTemplatePQ(const RolledTextureTemplatePQ & input_template) :
+        TextureTemplate(input_template.m_nrof_minu, input_template.m_des_length)
         {
             m_nrof_minu = input_template.m_nrof_minu;
             m_des_length = input_template.m_des_length;
