@@ -445,7 +445,6 @@ class FPTemplate
             m_nrof_minu_templates++;
 
         };
-        virtual void add_texture_template(const TextureTemplate & texture_template){};
         ~FPTemplate()
         {
             release();
