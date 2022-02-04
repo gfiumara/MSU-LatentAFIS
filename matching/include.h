@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   include.h
  * Author: cori
  *
@@ -62,13 +62,13 @@ class SingleTemplate
             m_blkW = 0;
         };
         SingleTemplate(const int nrof_minutiae, const int des_length):m_nrof_minu(nrof_minutiae),m_des_length(des_length)
-        {     
+        {
             m_des.reset(new float[m_nrof_minu*m_des_length]());
             m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
-        
-        
+
+
 
         void initialization(const int nrof_minutiae, const int des_length)
         {
@@ -78,9 +78,9 @@ class SingleTemplate
             m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
-        
+
         SingleTemplate(const SingleTemplate &temp)
-        {          
+        {
             m_nrof_minu = temp.m_nrof_minu;
             m_des_length = temp.m_des_length;
             //copy minutiae descriptor
@@ -89,7 +89,7 @@ class SingleTemplate
             m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             memcpy (m_minutiae.get(), temp.m_minutiae.get(), sizeof(MinuPoint)*m_nrof_minu);
             m_block_size = 16;
-            
+
             m_template_type = temp.m_template_type;
             m_oimg.reset(NULL);
             m_blkH = 0;
@@ -112,7 +112,7 @@ class SingleTemplate
             m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             memcpy (m_minutiae.get(), temp.m_minutiae.get(), sizeof(MinuPoint)*m_nrof_minu);
             m_block_size = 16;
-            
+
             m_template_type = temp.m_template_type;
             m_oimg.reset(NULL);
             m_blkH = 0;
@@ -184,26 +184,26 @@ class MinutiaeTemplate:public SingleTemplate{
         // minutiae, minutiae descriptor and ridge flow are included in minutiae template
         MinutiaeTemplate(const int nrof_minutiae, const short *x,const short *y,const float *ori,const int des_length, const float *des, const int blkH, const int blkW, const float *oimg):
         SingleTemplate(nrof_minutiae, des_length)
-        {           
+        {
             m_template_type = TemplateType::Minutiae;
-            
+
             SingleTemplate::m_blkH = blkH;
             SingleTemplate::m_blkW = blkW;
-            
+
             // minutiae descriptor
             memcpy (m_des.get(), des, sizeof(float)*m_nrof_minu*m_des_length);
-            
+
             // minutiae
             set_x(x);
             set_y(y);
             set_ori(ori);
-            
+
             m_oimg = NULL;
-            
-            // orientation field 
+
+            // orientation field
             m_oimg.reset(new float[m_blkH*m_blkW]());
             memcpy (m_oimg.get(), oimg, sizeof(float)*m_blkH*m_blkW);
-            
+
         };
         void initialization(const int nrof_minutiae, const int des_length)
         {
@@ -214,7 +214,7 @@ class MinutiaeTemplate:public SingleTemplate{
             m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
-        
+
         ~ MinutiaeTemplate()
         {
 
@@ -235,17 +235,17 @@ class TextureTemplate: public SingleTemplate
         // texture template initialization
         // Only minutiae and minutiae descriptors are included in texture template
         TextureTemplate(const int nrof_minutiae, const short *x,const short *y,const float *ori, const int des_length, const float *des):SingleTemplate(nrof_minutiae, des_length)
-        {           
+        {
             //release();
             m_template_type = TemplateType::Texture;
-            
+
             if(des){
                 memcpy(m_des.get(), des, sizeof(float)*m_nrof_minu*m_des_length);
             }
             set_x(x);
             set_y(y);
             set_ori(ori);
-            
+
             m_oimg = NULL;
             m_blkH = 0;
             m_blkW = 0;
@@ -258,7 +258,7 @@ class TextureTemplate: public SingleTemplate
             m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
-        
+
         ~ TextureTemplate()
         {
 
@@ -275,37 +275,37 @@ class LatentTextureTemplate: public TextureTemplate
         };
         LatentTextureTemplate(const int nrof_minutiae, const int des_length):TextureTemplate(nrof_minutiae,des_length)
         {
-           
+
             m_des.reset(new float[m_nrof_minu*m_des_length]());
             m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
         LatentTextureTemplate(const int nrof_minutiae, const short *x,const short *y,const float *ori, const int des_length, const float *des):
         TextureTemplate(nrof_minutiae, x, y, ori, des_length, des)
-        {           
+        {
         };
         void initialization(const int nrof_minutiae, const int des_length, const int nrof_subs,  const int nrof_clusters)
         {
             m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
             m_des.reset(new float[m_nrof_minu*m_des_length]());
-           
+
             m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
-        
+
          void compute_dist_to_codewords( float *codewords, const int nrof_subs, const int sub_dim,  const int nrof_clusters)
         {
             m_dist_codewords.resize(m_nrof_minu*nrof_subs*nrof_clusters);
-            
-            float *pdes0, *pdes1, *pdes2; 
+
+            float *pdes0, *pdes1, *pdes2;
             float *pword0, *pword1, *pword2;
             int i, j, k, q;
             float dist = 0.0;
             for(i=0; i<m_nrof_minu ; ++i)
             {
                 pdes0 = m_des.get() +  i*m_des_length;
-                
+
                 for(j=0;j<nrof_subs ; ++j)
                 {
                     pdes1 = pdes0 + j*sub_dim;
@@ -314,20 +314,20 @@ class LatentTextureTemplate: public TextureTemplate
                     for(q=0; q<nrof_clusters; ++q)
                     {
                         pword1 = pword0 + q*sub_dim;
-                        dist = 0.0; 
+                        dist = 0.0;
                         for(k=0, pdes2 = pdes1,pword2 = pword1; k<sub_dim; ++k,++pdes2,++pword2)
                         {
                             dist += (*pdes2-*pword2)* (*pdes2-*pword2);
                         }
                         m_dist_codewords[i*nrof_subs*nrof_clusters+j*nrof_clusters+q] = (dist);
                     }
-                    
+
                 }
             }
 
 
         };
-        
+
         ~LatentTextureTemplate()
         {
         };
@@ -348,26 +348,26 @@ class RolledTextureTemplatePQ:public TextureTemplate
         };
         RolledTextureTemplatePQ(const int nrof_minutiae, const int des_length):TextureTemplate(nrof_minutiae, des_length)
         {
-           
+
             m_desPQ.reset(new unsigned char[m_nrof_minu*m_des_length]());
         };
-        
+
         RolledTextureTemplatePQ(const RolledTextureTemplatePQ & input_template)
         {
             m_nrof_minu = input_template.m_nrof_minu;
             m_des_length = input_template.m_des_length;
-            
+
             m_block_size = input_template.m_block_size;
             m_block_size = input_template.m_block_size;
-                    
+
             m_desPQ.reset(new unsigned char[m_nrof_minu*m_des_length]());
             memcpy(m_desPQ.get(), input_template.m_desPQ.get(), sizeof(unsigned char)*m_nrof_minu*m_des_length);
-            
+
             m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             memcpy(m_minutiae.get(), input_template.m_minutiae.get(), sizeof(MinuPoint)*m_nrof_minu);
         };
-        
-        
+
+
         RolledTextureTemplatePQ(const int nrof_minutiae, const short *x,const short *y,const float *ori, const int des_length, const float *des):
         TextureTemplate(nrof_minutiae, x, y, ori, des_length, NULL)
         {
@@ -383,7 +383,7 @@ class RolledTextureTemplatePQ:public TextureTemplate
             m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
-        
+
         ~RolledTextureTemplatePQ()
         {
             m_nrof_minu = 0;
@@ -457,7 +457,7 @@ class FPTemplate
 };
 
 class LatentFPTemplate:public FPTemplate{
-public: 
+public:
     vector<LatentTextureTemplate> m_texture_templates;
     LatentFPTemplate():FPTemplate(Latent){};
     void release()
@@ -477,7 +477,7 @@ public:
 };
 
 class RolledFPTemplate:public FPTemplate{
-public: 
+public:
     vector<RolledTextureTemplatePQ> m_texture_templates;
     RolledFPTemplate():FPTemplate(Rolled){};
     void release()
