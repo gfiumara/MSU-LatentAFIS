@@ -46,7 +46,6 @@ class SingleTemplate
         int m_blkW;
         std::unique_ptr<float[]> m_des;
         std::unique_ptr<MinuPoint[]> m_minutiae;
-       std::unique_ptr<float[]> m_oimg;
         TemplateType m_template_type;
         SingleTemplate()
         {
@@ -57,7 +56,6 @@ class SingleTemplate
             m_block_size = 16;
             m_des = NULL;
             m_minutiae = NULL;
-            m_oimg = NULL;
             m_blkH = 0;
             m_blkW = 0;
         };
@@ -91,15 +89,12 @@ class SingleTemplate
             m_block_size = 16;
 
             m_template_type = temp.m_template_type;
-            m_oimg.reset(NULL);
             m_blkH = 0;
             m_blkW = 0;
             if(m_template_type==TemplateType::Minutiae)
             {
                 m_blkH = temp.m_blkH;
                 m_blkW = temp.m_blkW;
-                m_oimg.reset(new float[m_blkH*m_blkW]());
-                memcpy (m_oimg.get(), temp.m_oimg.get(), sizeof(float)*m_blkH*m_blkW);
             }
         };
         SingleTemplate& operator=(const SingleTemplate &temp)
@@ -114,14 +109,12 @@ class SingleTemplate
             m_block_size = 16;
 
             m_template_type = temp.m_template_type;
-            m_oimg.reset(NULL);
             m_blkH = 0;
             m_blkW = 0;
             if(m_template_type==TemplateType::Texture)
             {
                 m_blkH = temp.m_blkH;
                 m_blkW = temp.m_blkW;
-                m_oimg.reset(new float[m_nrof_minu*m_des_length]());
             }
 
             return (*this);
@@ -199,13 +192,6 @@ class MinutiaeTemplate:public SingleTemplate{
             set_x(x);
             set_y(y);
             set_ori(ori);
-
-            m_oimg = NULL;
-
-            // orientation field
-            m_oimg.reset(new float[m_blkH*m_blkW]());
-            memcpy (m_oimg.get(), oimg, sizeof(float)*m_blkH*m_blkW);
-
         };
         void initialization(const int nrof_minutiae, const int des_length)
         {
@@ -248,7 +234,6 @@ class TextureTemplate: public SingleTemplate
             set_y(y);
             set_ori(ori);
 
-            m_oimg = NULL;
             m_blkH = 0;
             m_blkW = 0;
         };
