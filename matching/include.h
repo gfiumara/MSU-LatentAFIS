@@ -14,11 +14,10 @@
 #ifndef INCLUDE_H
 #define INCLUDE_H
 
-#include<math.h>
-#include <memory.h>
+#include <cmath>
 #include <vector>
 #include <numeric>
-using std::vector;
+
 #define PI 3.1415926
 
 class MinuPoint
@@ -404,7 +403,7 @@ class FPTemplate
     public:
         int m_nrof_minu_templates;
         int m_nrof_texture_templates;
-        vector<MinutiaeTemplate> m_minu_templates;
+        std::vector<MinutiaeTemplate> m_minu_templates;
         FPType m_FP_type;
         FPTemplate(FPType FP_type):m_FP_type(FP_type)
         {
@@ -432,7 +431,7 @@ class FPTemplate
 
 class LatentFPTemplate:public FPTemplate{
 public:
-    vector<LatentTextureTemplate> m_texture_templates;
+    std::vector<LatentTextureTemplate> m_texture_templates;
     LatentFPTemplate():FPTemplate(Latent){};
     void release()
     {
@@ -452,7 +451,7 @@ public:
 
 class RolledFPTemplate:public FPTemplate{
 public:
-    vector<RolledTextureTemplatePQ> m_texture_templates;
+    std::vector<RolledTextureTemplatePQ> m_texture_templates;
     RolledFPTemplate():FPTemplate(Rolled){};
     void release()
     {
