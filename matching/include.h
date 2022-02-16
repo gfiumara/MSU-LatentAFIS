@@ -45,7 +45,7 @@ class SingleTemplate
         int m_blkH;
         int m_blkW;
         std::unique_ptr<float[]> m_des;
-        std::unique_ptr<MinuPoint[]> m_minutiae;
+        std::vector<MinuPoint> m_minutiae{};
         TemplateType m_template_type;
         SingleTemplate()
         {
@@ -55,14 +55,13 @@ class SingleTemplate
             m_template_type = TemplateType::Minutiae;
             m_block_size = 16;
             m_des = NULL;
-            m_minutiae = NULL;
             m_blkH = 0;
             m_blkW = 0;
         };
         SingleTemplate(const int nrof_minutiae, const int des_length):m_nrof_minu(nrof_minutiae),m_des_length(des_length)
         {
             m_des.reset(new float[m_nrof_minu*m_des_length]());
-            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
+            m_minutiae = std::vector<MinuPoint>(m_nrof_minu);
             m_block_size = 16;
         };
 
@@ -73,7 +72,7 @@ class SingleTemplate
             m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
             m_des.reset(new float[m_nrof_minu*m_des_length]());
-            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
+            m_minutiae = std::vector<MinuPoint>(m_nrof_minu);
             m_block_size = 16;
         };
 
@@ -84,8 +83,7 @@ class SingleTemplate
             //copy minutiae descriptor
             m_des.reset(new float[m_nrof_minu*m_des_length]());
             memcpy (m_des.get(), temp.m_des.get(), sizeof(float)*m_nrof_minu*m_des_length);
-            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
-            memcpy (m_minutiae.get(), temp.m_minutiae.get(), sizeof(MinuPoint)*m_nrof_minu);
+            m_minutiae = std::vector<MinuPoint>(temp.m_minutiae);
             m_block_size = 16;
 
             m_template_type = temp.m_template_type;
@@ -104,8 +102,7 @@ class SingleTemplate
             //copy minutiae descriptor
             m_des.reset(new float[m_nrof_minu*m_des_length]());
             memcpy (m_des.get(), temp.m_des.get(), sizeof(float)*m_nrof_minu*m_des_length);
-            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
-            memcpy (m_minutiae.get(), temp.m_minutiae.get(), sizeof(MinuPoint)*m_nrof_minu);
+            m_minutiae = std::vector<MinuPoint>(temp.m_minutiae);
             m_block_size = 16;
 
             m_template_type = temp.m_template_type;
@@ -142,18 +139,16 @@ class SingleTemplate
         }
         void set_y(const short *y)
         {
-            MinuPoint * pMinutiae = m_minutiae.get();
-            for(int i=0;i<m_nrof_minu; ++i,++pMinutiae)
+            for(int i=0;i<m_nrof_minu; ++i)
             {
-                pMinutiae->y = y[i];
+                m_minutiae[i].y = y[i];
             }
         };
         void set_ori(const float *ori)
         {
-            MinuPoint * pMinutiae = m_minutiae.get();
-            for(int i=0;i<m_nrof_minu; ++i,++pMinutiae)
+            for(int i=0;i<m_nrof_minu; ++i)
             {
-                pMinutiae->ori = ori[i];
+                m_minutiae[i].ori = ori[i];
             }
         };
         void set_type(const TemplateType template_type){
@@ -199,7 +194,7 @@ class MinutiaeTemplate:public SingleTemplate{
             m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
             m_des.reset(new float[m_nrof_minu*m_des_length]());
-            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
+            m_minutiae = std::vector<MinuPoint>(m_nrof_minu);
             m_block_size = 16;
         };
 
@@ -242,7 +237,7 @@ class TextureTemplate: public SingleTemplate
             m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
             m_des.reset(new float[m_nrof_minu*m_des_length]());
-            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
+            m_minutiae = std::vector<MinuPoint>(m_nrof_minu);
             m_block_size = 16;
         };
 
@@ -264,7 +259,7 @@ class LatentTextureTemplate: public TextureTemplate
         {
 
             m_des.reset(new float[m_nrof_minu*m_des_length]());
-            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
+            m_minutiae = std::vector<MinuPoint>(m_nrof_minu);
             m_block_size = 16;
         };
         LatentTextureTemplate(const int nrof_minutiae, const short *x,const short *y,const float *ori, const int des_length, const float *des):
@@ -277,7 +272,7 @@ class LatentTextureTemplate: public TextureTemplate
             m_des_length = des_length;
             m_des.reset(new float[m_nrof_minu*m_des_length]());
 
-            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
+            m_minutiae = std::vector<MinuPoint>(m_nrof_minu);
             m_block_size = 16;
         };
 
@@ -331,7 +326,6 @@ class RolledTextureTemplatePQ:public TextureTemplate
             m_des_length = 0;
             m_block_size = 16;
             m_des = NULL;
-            m_minutiae = NULL;
         };
         RolledTextureTemplatePQ(const int nrof_minutiae, const int des_length):TextureTemplate(nrof_minutiae, des_length)
         {
@@ -350,8 +344,7 @@ class RolledTextureTemplatePQ:public TextureTemplate
             m_desPQ = std::vector<unsigned char>(m_nrof_minu*m_des_length);
             memcpy(m_desPQ.data(), input_template.m_desPQ.data(), sizeof(unsigned char)*m_nrof_minu*m_des_length);
 
-            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
-            memcpy(m_minutiae.get(), input_template.m_minutiae.get(), sizeof(MinuPoint)*m_nrof_minu);
+            m_minutiae = std::vector<MinuPoint>(input_template.m_minutiae);
         };
 
 
@@ -367,7 +360,7 @@ class RolledTextureTemplatePQ:public TextureTemplate
             m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
             m_desPQ = std::vector<unsigned char>(m_nrof_minu*m_des_length);
-            m_minutiae.reset(new MinuPoint[m_nrof_minu]());
+            m_minutiae = std::vector<MinuPoint>(m_nrof_minu);
             m_block_size = 16;
         };
 
@@ -394,18 +387,16 @@ class RolledTextureTemplatePQ:public TextureTemplate
         }
         void set_y(short *y)
         {
-            MinuPoint * pMinutiae = m_minutiae.get();
-            for(int i=0;i<m_nrof_minu; ++i,++pMinutiae)
+            for(int i=0;i<m_nrof_minu; ++i)
             {
-                pMinutiae->y = y[i];
+                m_minutiae[i].y = y[i];
             }
         };
         void set_ori(float *ori)
         {
-            MinuPoint * pMinutiae = m_minutiae.get();
-            for(int i=0;i<m_nrof_minu; ++i,++pMinutiae)
+            for(int i=0;i<m_nrof_minu; ++i)
             {
-                pMinutiae->ori = ori[i];
+                m_minutiae[i].ori = ori[i];
             }
         };
 

@@ -1334,24 +1334,23 @@ const
 
     int i,j,k;
 
-    MinuPoint *p_latent_minutia_1, *p_latent_minutia_2, *p_rolled_minutia_1, *p_rolled_minutia_2;
     float dist_1, dist_2, dist;
     float dx_1, dy_1, dx_2, dy_2;
 
     for(i=0; i<num-1; ++i)
     {
-        p_latent_minutia_1 = & latent_template.m_minutiae[get<1>(corr[i])];
-        p_rolled_minutia_1 = & rolled_template.m_minutiae[get<2>(corr[i])];
+        const MinuPoint p_latent_minutia_1 = latent_template.m_minutiae[get<1>(corr[i])];
+        const MinuPoint p_rolled_minutia_1 = rolled_template.m_minutiae[get<2>(corr[i])];
         for(j=i+1; j<num;++j)
         {
-            p_latent_minutia_2 = & latent_template.m_minutiae[get<1>(corr[j])];
-            p_rolled_minutia_2 = & rolled_template.m_minutiae[get<2>(corr[j])];
+            const MinuPoint p_latent_minutia_2 = latent_template.m_minutiae[get<1>(corr[j])];
+            const MinuPoint p_rolled_minutia_2 = rolled_template.m_minutiae[get<2>(corr[j])];
 
-            dx_1 = p_latent_minutia_1->x-p_latent_minutia_2->x;
-            dx_2 = p_rolled_minutia_1->x-p_rolled_minutia_2->x;
+            dx_1 = p_latent_minutia_1.x-p_latent_minutia_2.x;
+            dx_2 = p_rolled_minutia_1.x-p_rolled_minutia_2.x;
 
-            dy_1 = p_latent_minutia_1->y-p_latent_minutia_2->y;
-            dy_2 = p_rolled_minutia_1->y-p_rolled_minutia_2->y;
+            dy_1 = p_latent_minutia_1.y-p_latent_minutia_2.y;
+            dy_2 = p_rolled_minutia_1.y-p_rolled_minutia_2.y;
 
             dist_1 = (dx_1*dx_1)+(dy_1*dy_1);
             dist_1 = sqrt(dist_1);
@@ -1460,26 +1459,25 @@ const
 
     int i,j,k;
 
-    MinuPoint *p_latent_minutia_1, *p_latent_minutia_2, *p_rolled_minutia_1, *p_rolled_minutia_2;
     float dist_1, dist_2, dist;
     int  dx_1, dy_1, dx_2, dy_2;
 
     for(i=0; i<num-1; ++i)
     {
-        p_latent_minutia_1 = & latent_template.m_minutiae[get<1>(corr[i])];
-        p_rolled_minutia_1 = & rolled_template.m_minutiae[get<2>(corr[i])];
+        const MinuPoint p_latent_minutia_1 = latent_template.m_minutiae[get<1>(corr[i])];
+        const MinuPoint p_rolled_minutia_1 = rolled_template.m_minutiae[get<2>(corr[i])];
         for(j=i+1; j<num;++j)
         {
-            p_latent_minutia_2 = & latent_template.m_minutiae[get<1>(corr[j])];
-            p_rolled_minutia_2 = & rolled_template.m_minutiae[get<2>(corr[j])];
+            const MinuPoint p_latent_minutia_2 = latent_template.m_minutiae[get<1>(corr[j])];
+            const MinuPoint p_rolled_minutia_2 = rolled_template.m_minutiae[get<2>(corr[j])];
 
-            dx_1 = p_latent_minutia_1->x-p_latent_minutia_2->x;
-            dx_2 = p_rolled_minutia_1->x-p_rolled_minutia_2->x;
+            dx_1 = p_latent_minutia_1.x-p_latent_minutia_2.x;
+            dx_2 = p_rolled_minutia_1.x-p_rolled_minutia_2.x;
 
             dx_1 = abs(dx_1);
             dx_2 = abs(dx_2);
-            dy_1 = p_latent_minutia_1->y-p_latent_minutia_2->y;
-            dy_2 = p_rolled_minutia_1->y-p_rolled_minutia_2->y;
+            dy_1 = p_latent_minutia_1.y-p_latent_minutia_2.y;
+            dy_2 = p_rolled_minutia_1.y-p_rolled_minutia_2.y;
 
             dy_1 = abs(dy_1);
             dy_2 = abs(dy_2);
@@ -1592,19 +1590,19 @@ const
 
     for(i=0; i<num-1; ++i)
     {
-        p_latent_minutia_1 = & latent_template.m_minutiae[get<1>(corr[i])];
-        p_rolled_minutia_1 = & rolled_template.m_minutiae[get<2>(corr[i])];
+        const MinuPoint p_latent_minutia_1 = latent_template.m_minutiae[get<1>(corr[i])];
+        const MinuPoint p_rolled_minutia_1 = rolled_template.m_minutiae[get<2>(corr[i])];
         for(j=i+1; j<num;++j)
         {
-            p_latent_minutia_2 = & latent_template.m_minutiae[get<1>(corr[j])];
-            p_rolled_minutia_2 = & rolled_template.m_minutiae[get<2>(corr[j])];
+            const MinuPoint p_latent_minutia_2 = latent_template.m_minutiae[get<1>(corr[j])];
+            const MinuPoint p_rolled_minutia_2 = rolled_template.m_minutiae[get<2>(corr[j])];
 
-            dx_1 = p_latent_minutia_1->x-p_latent_minutia_2->x;
-            dx_2 = p_rolled_minutia_1->x-p_rolled_minutia_2->x;
+            dx_1 = p_latent_minutia_1.x-p_latent_minutia_2.x;
+            dx_2 = p_rolled_minutia_1.x-p_rolled_minutia_2.x;
 
 
-            dy_1 = p_latent_minutia_1->y-p_latent_minutia_2->y;
-            dy_2 = p_rolled_minutia_1->y-p_rolled_minutia_2->y;
+            dy_1 = p_latent_minutia_1.y-p_latent_minutia_2.y;
+            dy_2 = p_rolled_minutia_1.y-p_rolled_minutia_2.y;
 
 
             dist_1 = (dx_1*dx_1)+(dy_1*dy_1);
@@ -1706,7 +1704,6 @@ const
 
     int i,j,k;
 
-    MinuPoint *p_latent_minutia_1, *p_latent_minutia_2, *p_rolled_minutia_1, *p_rolled_minutia_2;
     float dist_1, dist_2;
     float angle_1, angle_2, angle_diff;
     float line_angle_1, line_angle_2;
@@ -1715,17 +1712,17 @@ const
 
     for(i=0; i<num-1; ++i)
     {
-        p_latent_minutia_1 = & latent_template.m_minutiae[get<1>(corr[i])];
-        p_rolled_minutia_1 = & rolled_template.m_minutiae[get<2>(corr[i])];
+        const MinuPoint p_latent_minutia_1 = latent_template.m_minutiae[get<1>(corr[i])];
+        const MinuPoint p_rolled_minutia_1 = rolled_template.m_minutiae[get<2>(corr[i])];
         for(j=i+1; j<num;++j)
         {
-            p_latent_minutia_2 = & latent_template.m_minutiae[get<1>(corr[j])];
-            p_rolled_minutia_2 = & rolled_template.m_minutiae[get<2>(corr[j])];
+            const MinuPoint p_latent_minutia_2 = latent_template.m_minutiae[get<1>(corr[j])];
+            const MinuPoint p_rolled_minutia_2 = rolled_template.m_minutiae[get<2>(corr[j])];
 
-            angle_1 = p_latent_minutia_1->ori-p_latent_minutia_2->ori;
+            angle_1 = p_latent_minutia_1.ori-p_latent_minutia_2.ori;
             angle_1 = adjust_angle(angle_1);
 
-            angle_2 = p_rolled_minutia_1->ori-p_rolled_minutia_2->ori;
+            angle_2 = p_rolled_minutia_1.ori-p_rolled_minutia_2.ori;
             angle_2 = adjust_angle(angle_2);
 
             angle_diff = fabs(angle_1 - angle_2);
@@ -1738,21 +1735,21 @@ const
             if(angle_diff>PI/4.)
                 continue;
 
-            dx_1 = p_latent_minutia_1->x-p_latent_minutia_2->x;
-            dy_1 = p_latent_minutia_1->y-p_latent_minutia_2->y;
+            dx_1 = p_latent_minutia_1.x-p_latent_minutia_2.x;
+            dy_1 = p_latent_minutia_1.y-p_latent_minutia_2.y;
 
 
 
             line_angle_1 = -atan2(dy_1,dx_1);
-            angle_1 = p_latent_minutia_1->ori - line_angle_1;
+            angle_1 = p_latent_minutia_1.ori - line_angle_1;
             angle_1 = adjust_angle(angle_1);
 
 
-            dx_2 = p_rolled_minutia_1->x-p_rolled_minutia_2->x;
-            dy_2 = p_rolled_minutia_1->y-p_rolled_minutia_2->y;
+            dx_2 = p_rolled_minutia_1.x-p_rolled_minutia_2.x;
+            dy_2 = p_rolled_minutia_1.y-p_rolled_minutia_2.y;
 
             line_angle_2 = -atan2(dy_2,dx_2);
-            angle_2 = p_rolled_minutia_1->ori - line_angle_2;
+            angle_2 = p_rolled_minutia_1.ori - line_angle_2;
             angle_2 = adjust_angle(angle_2);
 
             angle_diff = fabs(angle_1 - angle_2);
@@ -1764,11 +1761,11 @@ const
 
 
 
-            angle_1 = p_latent_minutia_2->ori - line_angle_1;
+            angle_1 = p_latent_minutia_2.ori - line_angle_1;
             angle_1 = adjust_angle(angle_1);
 
 
-            angle_2 = p_rolled_minutia_2->ori - line_angle_2;
+            angle_2 = p_rolled_minutia_2.ori - line_angle_2;
             angle_2 = adjust_angle(angle_2);
 
             angle_diff = fabs(angle_1 - angle_2);
