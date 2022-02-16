@@ -556,7 +556,6 @@ const
     float dist0=0.0, dist1= 0.0, dist2= 0, dist3=0.0, dist4 = 0.0; //, dist5, dist6,dist7, dist8;
     int code1 = 0, code2 = 0, code3 = 0, code4=0;
     float *p_dist_codewords0 = NULL, *p_dist_codewords1 = NULL, *p_dist_codewords2 =NULL;
-    unsigned char *p_des0=NULL, *p_des1=NULL;
 
     /* Make a copy of the codewords from the latent texture template */
     std::unique_ptr<float[]> latent_texture_template_m_dist_codewords_copy(new float[latent_texture_template.m_dist_codewords.size()]);
@@ -564,7 +563,7 @@ const
 
     int n=0;
     int nrof_clusters3 = nrof_clusters*3, nrof_clusters2 = nrof_clusters*2;
-    int method = 1;
+    const int method = 1;
     if(method == 1)
     {
         for(i=0; i<numLatentMinutiae; ++i)
@@ -577,7 +576,7 @@ const
                 dist3 = 0.;
                 dist4 = 0.;
                 p_dist_codewords1 = p_dist_codewords0;
-                p_des0 = rolled_texture_template.m_desPQ.get() + j* rolled_texture_template.m_des_length;
+                const unsigned char *p_des0 = rolled_texture_template.m_desPQ.data() + j* rolled_texture_template.m_des_length;
                 for(k=0; k<nrof_subs; k+=4, p_dist_codewords1+=4*nrof_clusters)
                 {
                     code1 = *(p_des0+k);
@@ -616,7 +615,7 @@ const
                        dist3 = 0.;
                        dist4 = 0.;
                        p_dist_codewords1 = p_dist_codewords0;
-                       p_des0 = rolled_texture_template.m_desPQ.get() + jj* rolled_texture_template.m_des_length;
+                       const unsigned char *p_des0 = rolled_texture_template.m_desPQ.data() + jj* rolled_texture_template.m_des_length;
 
 
                         for(k=0; k<nrof_subs; k+=4, p_dist_codewords1+=4*nrof_clusters)
@@ -649,10 +648,10 @@ const
             for(j=0; j<numExemplarMinutiae-B2; j += B2)
             {
                 p_dist_codewords1 = p_dist_codewords0;
-                p_des0 = rolled_texture_template.m_desPQ.get() + j* rolled_texture_template.m_des_length;
+                const unsigned char *p_des0 = rolled_texture_template.m_desPQ.data() + j* rolled_texture_template.m_des_length;
                 for(int ii=i; ii<i+B1; ++ii)
                 {
-                    p_des1 = p_des0;
+                    const unsigned char *p_des1 = p_des0;
                     for(int jj=j; jj<j+B2; ++jj)
                     {
                        p_dist_codewords2 = p_dist_codewords1;
@@ -686,7 +685,6 @@ const
     }
     else if(method==4)
     {
-        unsigned char *p_des3=NULL, *p_des2=NULL;
         for(i=0; i<numLatentMinutiae; ++i)
         {
             p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.get() + i*nrof_subs*nrof_clusters;
@@ -695,10 +693,10 @@ const
                 for(j=0; j<numExemplarMinutiae-4; j+=4)
                 {
                     n = i*numExemplarMinutiae + j;
-                    p_des0 = rolled_texture_template.m_desPQ.get() + j* rolled_texture_template.m_des_length + k;
-                    p_des1 = p_des0 + rolled_texture_template.m_des_length;
-                    p_des2 = p_des1 + rolled_texture_template.m_des_length;
-                    p_des3 = p_des2 + rolled_texture_template.m_des_length;
+                    const unsigned char *p_des0 = rolled_texture_template.m_desPQ.data() + j* rolled_texture_template.m_des_length + k;
+                    const unsigned char *p_des1 = p_des0 + rolled_texture_template.m_des_length;
+                    const unsigned char *p_des2 = p_des1 + rolled_texture_template.m_des_length;
+                    const unsigned char *p_des3 = p_des2 + rolled_texture_template.m_des_length;
 
                     dist0 -= *(p_dist_codewords0 + *p_des0);
 
@@ -1312,7 +1310,7 @@ int Matcher::load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu
         is.read(reinterpret_cast<char*>(feature.get()),sizeof(float)*nrof_minutiae);
     }
 
-    is.read(reinterpret_cast<char*>(minu_template.m_desPQ.get()),sizeof(unsigned char)*nrof_minutiae*des_len);
+    is.read(reinterpret_cast<char*>(minu_template.m_desPQ.data()),sizeof(unsigned char)*nrof_minutiae*des_len);
 
     is.close();
 

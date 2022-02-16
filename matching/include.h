@@ -323,7 +323,7 @@ class LatentTextureTemplate: public TextureTemplate
 class RolledTextureTemplatePQ:public TextureTemplate
 {
     public:
-        std::unique_ptr<unsigned char[]> m_desPQ;
+        std::vector<unsigned char> m_desPQ;
         RolledTextureTemplatePQ()
         {
             m_nrof_minu = 0;
@@ -335,8 +335,7 @@ class RolledTextureTemplatePQ:public TextureTemplate
         };
         RolledTextureTemplatePQ(const int nrof_minutiae, const int des_length):TextureTemplate(nrof_minutiae, des_length)
         {
-
-            m_desPQ.reset(new unsigned char[m_nrof_minu*m_des_length]());
+            m_desPQ = std::vector<unsigned char>(m_nrof_minu*m_des_length);
         };
 
         RolledTextureTemplatePQ(const RolledTextureTemplatePQ & input_template) :
@@ -348,8 +347,8 @@ class RolledTextureTemplatePQ:public TextureTemplate
             m_block_size = input_template.m_block_size;
             m_block_size = input_template.m_block_size;
 
-            m_desPQ.reset(new unsigned char[m_nrof_minu*m_des_length]());
-            memcpy(m_desPQ.get(), input_template.m_desPQ.get(), sizeof(unsigned char)*m_nrof_minu*m_des_length);
+            m_desPQ = std::vector<unsigned char>(m_nrof_minu*m_des_length);
+            memcpy(m_desPQ.data(), input_template.m_desPQ.data(), sizeof(unsigned char)*m_nrof_minu*m_des_length);
 
             m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             memcpy(m_minutiae.get(), input_template.m_minutiae.get(), sizeof(MinuPoint)*m_nrof_minu);
@@ -359,15 +358,15 @@ class RolledTextureTemplatePQ:public TextureTemplate
         RolledTextureTemplatePQ(const int nrof_minutiae, const short *x,const short *y,const float *ori, const int des_length, const float *des):
         TextureTemplate(nrof_minutiae, x, y, ori, des_length, NULL)
         {
-            m_desPQ.reset(new unsigned char[m_nrof_minu*m_des_length]());
-            memcpy(m_desPQ.get(), des, sizeof(char)*m_nrof_minu*m_des_length);
+            m_desPQ = std::vector<unsigned char>(m_nrof_minu*m_des_length);
+            memcpy(m_desPQ.data(), des, sizeof(char)*m_nrof_minu*m_des_length);
         };
         void initialization(const int nrof_minutiae, const int des_length)
         {
             // release();
             m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
-            m_desPQ.reset(new unsigned char[m_nrof_minu*m_des_length]());
+            m_desPQ = std::vector<unsigned char>(m_nrof_minu*m_des_length);
             m_minutiae.reset(new MinuPoint[m_nrof_minu]());
             m_block_size = 16;
         };
