@@ -420,9 +420,13 @@ const
 }
 
 
-float Matcher::One2One_minutiae_matching(const MinutiaeTemplate &latent_minu_template, const MinutiaeTemplate &rolled_minu_template, bool save_corr, string corr_file)
+float Matcher::One2One_minutiae_matching(const MinutiaeTemplate &latent_minu_template_in, const MinutiaeTemplate &rolled_minu_template_in, bool save_corr, string corr_file)
 const
 {
+	// XXX: Can we avoid the manipulation from eigen below and not dup?
+	MinutiaeTemplate latent_minu_template(latent_minu_template_in);
+	MinutiaeTemplate rolled_minu_template(rolled_minu_template_in);
+
     // step 1: compute pairwise similarity between descriptors
 
     int n_time = 0;
@@ -440,8 +444,8 @@ const
     using namespace std::chrono;
     vector<high_resolution_clock::time_point> t(10);
 
-    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> aa =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(latent_minu_template.m_des.get(),latent_minu_template.m_nrof_minu,des_len);
-    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> bb =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(rolled_minu_template.m_des.get(),rolled_minu_template.m_nrof_minu,des_len);
+    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> aa =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(latent_minu_template.m_des.data(),latent_minu_template.m_nrof_minu,des_len);
+    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> bb =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(rolled_minu_template.m_des.data(),rolled_minu_template.m_nrof_minu,des_len);
 
     MatrixXf  simi_matrix=aa*bb.transpose();
 
@@ -1258,7 +1262,7 @@ int Matcher::load_single_template(string tname, TextureTemplate& texture_templat
         is.read(reinterpret_cast<char*>(feature.get()),sizeof(float)*nrof_minutiae);
     }
 
-    is.read(reinterpret_cast<char*>(texture_template.m_des.get()),sizeof(float)*nrof_minutiae*des_len);
+    is.read(reinterpret_cast<char*>(texture_template.m_des.data()),sizeof(float)*nrof_minutiae*des_len);
 
 
     is.close();
