@@ -15,8 +15,9 @@
 #define INCLUDE_H
 
 #include <cmath>
-#include <vector>
+#include <cstring>
 #include <numeric>
+#include <vector>
 
 #define PI 3.1415926
 
@@ -178,7 +179,7 @@ class MinutiaeTemplate:public SingleTemplate{
 
             // minutiae descriptor
             m_des = std::vector<float>(m_nrof_minu*m_des_length);
-            memcpy (m_des.data(), des, sizeof(float)*m_nrof_minu*m_des_length);
+            std::memcpy (m_des.data(), des, sizeof(float)*m_nrof_minu*m_des_length);
 
             // minutiae
             set_x(x);
@@ -220,7 +221,7 @@ class TextureTemplate: public SingleTemplate
             m_template_type = TemplateType::Texture;
 
             if(des){
-                memcpy(m_des.data(), des, sizeof(float)*m_nrof_minu*m_des_length);
+                std::memcpy(m_des.data(), des, sizeof(float)*m_nrof_minu*m_des_length);
             }
             set_x(x);
             set_y(y);
@@ -337,7 +338,7 @@ class RolledTextureTemplatePQ:public TextureTemplate
             m_block_size = input_template.m_block_size;
 
             m_desPQ = std::vector<unsigned char>(m_nrof_minu*m_des_length);
-            memcpy(m_desPQ.data(), input_template.m_desPQ.data(), sizeof(unsigned char)*m_nrof_minu*m_des_length);
+            std::memcpy(m_desPQ.data(), input_template.m_desPQ.data(), sizeof(unsigned char)*m_nrof_minu*m_des_length);
 
             m_minutiae = std::vector<MinuPoint>(input_template.m_minutiae);
         };
@@ -347,7 +348,7 @@ class RolledTextureTemplatePQ:public TextureTemplate
         TextureTemplate(nrof_minutiae, x, y, ori, des_length, NULL)
         {
             m_desPQ = std::vector<unsigned char>(m_nrof_minu*m_des_length);
-            memcpy(m_desPQ.data(), des, sizeof(char)*m_nrof_minu*m_des_length);
+            std::memcpy(m_desPQ.data(), des, sizeof(char)*m_nrof_minu*m_des_length);
         };
         void initialization(const int nrof_minutiae, const int des_length)
         {
