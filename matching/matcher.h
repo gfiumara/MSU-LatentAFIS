@@ -67,7 +67,7 @@ private:
     int nrof_subs;
     int nrof_clusters;
     int sub_dim;
-    std::unique_ptr<float[]> codewords{};
+    std::vector<float> codewords{};
 };
 }
 #endif /* MATCHER_H */

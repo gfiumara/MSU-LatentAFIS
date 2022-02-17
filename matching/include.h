@@ -273,29 +273,28 @@ class LatentTextureTemplate: public TextureTemplate
             m_block_size = 16;
         };
 
-         void compute_dist_to_codewords( float *codewords, const int nrof_subs, const int sub_dim,  const int nrof_clusters)
+         void compute_dist_to_codewords(const std::vector<float> &codewords, const int nrof_subs, const int sub_dim,  const int nrof_clusters)
         {
             m_dist_codewords.resize(m_nrof_minu*nrof_subs*nrof_clusters);
 
-            float *pdes0, *pdes1, *pdes2;
-            float *pword0, *pword1, *pword2;
-            int i, j, k, q;
-            float dist = 0.0;
-            for(i=0; i<m_nrof_minu ; ++i)
+            float *pword2;
+            for(int i=0; i<m_nrof_minu ; ++i)
             {
-                pdes0 = m_des.data() +  i*m_des_length;
+                float *pdes0 = m_des.data() +  i*m_des_length;
 
-                for(j=0;j<nrof_subs ; ++j)
+                for(int j=0;j<nrof_subs ; ++j)
                 {
-                    pdes1 = pdes0 + j*sub_dim;
-                    pword0 = codewords + j*nrof_clusters*sub_dim;
-                    float min_v = 1000;
-                    for(q=0; q<nrof_clusters; ++q)
+                    const float *pdes1 = pdes0 + j*sub_dim;
+                    const float *pword0 = codewords.data() + j*nrof_clusters*sub_dim;
+                    const float min_v = 1000;
+                    for(int q=0; q<nrof_clusters; ++q)
                     {
-                        pword1 = pword0 + q*sub_dim;
-                        dist = 0.0;
-                        for(k=0, pdes2 = pdes1,pword2 = pword1; k<sub_dim; ++k,++pdes2,++pword2)
+                        const float *pword1 = pword0 + q*sub_dim;
+                        float dist = 0.0;
+                        for(int k=0; k<sub_dim; ++k)
                         {
+                            const float *pword2 = pword1 + k;
+                            const float *pdes2 = pdes1 + k;
                             dist += (*pdes2-*pword2)* (*pdes2-*pword2);
                         }
                         m_dist_codewords[i*nrof_subs*nrof_clusters+j*nrof_clusters+q] = (dist);

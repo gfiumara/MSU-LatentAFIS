@@ -33,7 +33,6 @@ namespace PQ
 Matcher::Matcher(string code_file)
 {
     N = 200;
-    codewords = NULL;
     description.push_back("minutiae similarity");
 
     description.push_back("obtaining corr");
@@ -81,8 +80,8 @@ Matcher::Matcher(string code_file)
         cout<<"codebook is empty!"<<endl;
     }
 
-    codewords.reset(new float[len]);
-    float *pword = codewords.get();
+    codewords = std::vector<float>(len);
+    float *pword = codewords.data();
     for(int i=0;i<nrof_subs; ++i)
     {
         for(int j=0; j<nrof_clusters; ++j)
@@ -881,7 +880,7 @@ int Matcher::load_FP_template(string tname, LatentFPTemplate & fp_template)
 
 
         LatentTextureTemplate texture_template(nrof_minutiae,x,y,ori,des_len,des);
-        texture_template.compute_dist_to_codewords(codewords.get(), nrof_subs,  sub_dim,  nrof_clusters);
+        texture_template.compute_dist_to_codewords(this->codewords, nrof_subs,  sub_dim,  nrof_clusters);
         fp_template.add_texture_template(texture_template);
     }
     is.close();
@@ -999,7 +998,7 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate
 
 
         LatentTextureTemplate texture_template(nrof_minutiae,x.get(),y.get(),ori.get(),des_len,des);
-        texture_template.compute_dist_to_codewords(codewords.get(), nrof_subs,  sub_dim,  nrof_clusters);
+        texture_template.compute_dist_to_codewords(this->codewords, nrof_subs,  sub_dim,  nrof_clusters);
         fp_template.add_texture_template(texture_template);
     }
 }
