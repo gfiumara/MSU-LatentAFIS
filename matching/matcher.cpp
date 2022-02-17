@@ -1323,11 +1323,6 @@ int Matcher::load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu
     return 0;
 }
 
-Matcher::Matcher(const Matcher& orig)
-{
-
-}
-
 vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template, const SingleTemplate & rolled_template, float d_thr)
 const
 {
