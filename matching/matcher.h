@@ -31,7 +31,7 @@ namespace PQ
     const int MaxNRolledMinu = 1000;
     const int MaxNLatentMinu = 1000;
 
-class Matcher {
+class Matcher final {
 
 
 public:
@@ -50,7 +50,6 @@ public:
     void load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate & fp_template) const;
     int load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu_template);
     Matcher(const Matcher& orig);
-    virtual ~Matcher() = default;
 
 private:
     vector<tuple<float, int, int>>  LSS_R_Fast2_Dist(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template,const SingleTemplate & rolled_template, float d_thr=30.0) const;
