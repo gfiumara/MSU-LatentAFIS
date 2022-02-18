@@ -790,7 +790,7 @@ const
 
 }
 
-LatentFPTemplate Matcher::load_latent_template(const std::string &tname)
+LatentFPTemplate Matcher::load_latent_template(const std::string &tname) const
 {
 	std::ifstream is{tname, ifstream::binary};
 	if (!is)
@@ -919,7 +919,7 @@ LatentFPTemplate Matcher::load_latent_template(const std::vector<uint8_t> &buf) 
     return (fp_template);
 }
 
-RolledFPTemplate Matcher::load_rolled_template(const string &tname)
+RolledFPTemplate Matcher::load_rolled_template(const string &tname) const
 {
 	std::ifstream is{tname, ifstream::binary};
 	if (!is)

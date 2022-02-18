@@ -46,8 +46,8 @@ public:
     int One2One_matching_selected_templates(const LatentFPTemplate &latent_template, const RolledFPTemplate &rolled_template, vector<float> & score, bool save_corr = false, string corr_file = "") const;
     int One2One_matching_all_templates(const LatentFPTemplate &latent_template, const RolledFPTemplate &rolled_template, vector<float> & score);
 
-    LatentFPTemplate load_latent_template(const string &tname);
-    RolledFPTemplate load_rolled_template(const string &tname);
+    LatentFPTemplate load_latent_template(const string &tname) const;
+    RolledFPTemplate load_rolled_template(const string &tname) const;
     LatentFPTemplate load_latent_template(const std::vector<uint8_t> &buf) const;
     RolledFPTemplate load_rolled_template(const std::vector<uint8_t> &buf) const;
 
