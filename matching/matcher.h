@@ -47,10 +47,10 @@ public:
 #if 0
     int One2One_matching(string latent_file, string rolled_file);
     int load_single_template(string tname, TextureTemplate& texture_template);
-    int load_FP_template(string tname, LatentFPTemplate & fp_template);
-    int load_FP_template(string tname, RolledFPTemplate & fp_template);
     int load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu_template);
 #endif
+    LatentFPTemplate load_latent_template(const string &tname);
+    RolledFPTemplate load_rolled_template(const string &tname);
     LatentFPTemplate load_latent_template(const std::vector<uint8_t> &buf) const;
     RolledFPTemplate load_rolled_template(const std::vector<uint8_t> &buf) const;
 

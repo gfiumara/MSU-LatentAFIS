@@ -790,108 +790,19 @@ const
 
 }
 
-#if 0
-int Matcher::load_FP_template(string tname, LatentFPTemplate & fp_template)
+LatentFPTemplate Matcher::load_latent_template(const std::string &tname)
 {
-    fp_template.release();
-    const short Max_Nrof_Minutiae = 2*1000; // including virtual minutiae. We only consider top 1000 minutiae including both real and virtual minutiae for each template.
-    const short Max_Des_Length = 192;
-    const short Max_BlkSize = 100;
+	std::ifstream is{tname, ifstream::binary};
+	if (!is)
+		throw std::runtime_error{"Could not open " + tname};
 
-    ifstream is;
-    is.open(tname, ifstream::binary);
-    // get length of file:
-    is.seekg(0, ios::end);
-    int length = is.tellg();
+	is.seekg(0, std::ios_base::end);
+	std::vector<uint8_t> buf(is.tellg());
+	is.seekg(0, std::ios_base::beg);
 
-    if( length<=0 )
-    {
-        return 1;
-    }
-    is.seekg(0, ios::beg);
-    short header[12];
-    short h,w,blkH,blkW;
-    unsigned char nrof_minu_template,nrof_texture_template;
-    short nrof_minutiae;
-
-
-    short nrof_minutiae_feature;
-    short des_len;
-    int i,j;
-
-    short x[Max_Nrof_Minutiae],y[Max_Nrof_Minutiae];
-    float ori[Max_Nrof_Minutiae];
-    float oimg[Max_BlkSize*Max_BlkSize];
-
-    float des[Max_Nrof_Minutiae*Max_Des_Length];
-
-    for(int i=0; i<12; i++){
-        is.read(reinterpret_cast<char*>(&header[i]),sizeof(short));
-    }
-
-    is.read(reinterpret_cast<char*>(&h),sizeof(short));
-    is.read(reinterpret_cast<char*>(&w),sizeof(short));
-    is.read(reinterpret_cast<char*>(&blkH),sizeof(short));
-    is.read(reinterpret_cast<char*>(&blkW),sizeof(short));
-    is.read(reinterpret_cast<char*>(&nrof_minu_template),sizeof(unsigned char));
-    if(blkH>50)
-        blkH = 50;
-    if(blkW>50)
-        blkW = 50;
-    for(i=0;i<nrof_minu_template; ++i)
-    {
-        is.read(reinterpret_cast<char*>(&nrof_minutiae),sizeof(short));
-        if(nrof_minutiae<=0)
-            continue;
-        if(nrof_minutiae>Max_Nrof_Minutiae)
-        {
-            cout<<"Number of minutiae is larger than Max Number of Minutiae (latent):"<< nrof_minutiae << ">"<<Max_Nrof_Minutiae<<endl;
-            return 2;
-        }
-        if(blkH>Max_BlkSize || blkW>Max_BlkSize)
-        {
-            cout<<"The size of the ridge flow is larger than maximum size:"<< Max_BlkSize<<endl;
-            return 4;
-        }
-        is.read(reinterpret_cast<char*>(x),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(y),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(ori),sizeof(float)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(&des_len),sizeof(short));
-
-        is.read(reinterpret_cast<char*>(des),sizeof(float)*nrof_minutiae*des_len);
-
-        MinutiaeTemplate minu_template(nrof_minutiae,x,y,ori,des_len,des,blkH, blkW, oimg);
-        fp_template.add_template(minu_template);
-    }
-
-    is.read(reinterpret_cast<char*>(&nrof_texture_template),sizeof(unsigned char));
-
-   for(i=0;i<nrof_texture_template; ++i)
-    {
-        is.read(reinterpret_cast<char*>(&nrof_minutiae),sizeof(short));
-        if(nrof_minutiae<=0)
-            continue;
-        if(nrof_minutiae>Max_Nrof_Minutiae)
-        {
-            cout<<"Number of minutiae is larger than Max Number of Minutiae:"<< nrof_minutiae << ">"<< Max_Nrof_Minutiae<<endl;
-            return -1;
-        }
-        is.read(reinterpret_cast<char*>(x),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(y),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(ori),sizeof(float)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(&des_len),sizeof(short));
-        is.read(reinterpret_cast<char*>(des),sizeof(float)*nrof_minutiae*des_len);
-
-
-        LatentTextureTemplate texture_template(nrof_minutiae,x,y,ori,des_len,des);
-        texture_template.compute_dist_to_codewords(this->codewords, nrof_subs,  sub_dim,  nrof_clusters);
-        fp_template.add_texture_template(texture_template);
-    }
-    is.close();
-
-    return 0;
+	is.read(reinterpret_cast<char *>(buf.data()), buf.size());
+	return (load_latent_template(buf));
 }
-#endif
 
 LatentFPTemplate Matcher::load_latent_template(const std::vector<uint8_t> &buf) const
 {
@@ -1008,106 +919,19 @@ LatentFPTemplate Matcher::load_latent_template(const std::vector<uint8_t> &buf) 
     return (fp_template);
 }
 
-#if 0
-int Matcher::load_FP_template(string tname, RolledFPTemplate & fp_template)
+RolledFPTemplate Matcher::load_rolled_template(const string &tname)
 {
-    fp_template.release();
-    const short Max_Nrof_Minutiae = 2*1000; // including virtual minutiae. We only consider top 1000 minutiae including both real and virtual minutiae for each template.
-    const short Max_Des_Length = 192;
-    const short Max_BlkSize = 100;
+	std::ifstream is{tname, ifstream::binary};
+	if (!is)
+		throw std::runtime_error{"Could not open " + tname};
 
-    ifstream is;
-    is.open(tname, ifstream::binary);
-    // get length of file:
-    is.seekg(0, ios::end);
-    int length = is.tellg();
+	is.seekg(0, std::ios_base::end);
+	std::vector<uint8_t> buf(is.tellg());
+	is.seekg(0, std::ios_base::beg);
 
-    if( length<=10 )
-    {
-        return 1;
-    }
-    is.seekg(0, ios::beg);
-    short header[12];
-    short h,w,blkH,blkW;
-    unsigned char nrof_minu_template,nrof_texture_template;
-    short nrof_minutiae;
-
-
-    short nrof_minutiae_feature;
-    short des_len=96;
-    int i,j;
-
-    short x[Max_Nrof_Minutiae],y[Max_Nrof_Minutiae];
-    float ori[Max_Nrof_Minutiae];
-    float reliability[Max_Nrof_Minutiae];
-    float oimg[Max_BlkSize*Max_BlkSize];
-
-    float des[Max_Nrof_Minutiae*Max_Des_Length];
-
-    for(int i=0; i<12; i++){
-        is.read(reinterpret_cast<char*>(&header[i]),sizeof(short));
-    }
-    is.read(reinterpret_cast<char*>(&h),sizeof(short));
-    is.read(reinterpret_cast<char*>(&w),sizeof(short));
-    is.read(reinterpret_cast<char*>(&blkH),sizeof(short));
-    is.read(reinterpret_cast<char*>(&blkW),sizeof(short));
-    is.read(reinterpret_cast<char*>(&nrof_minu_template),sizeof(unsigned char));
-    if(blkH>50)
-        blkH = 50;
-    if(blkW>50)
-        blkW = 50;
-    for(i=0;i<nrof_minu_template; ++i)
-    {
-        is.read(reinterpret_cast<char*>(&nrof_minutiae),sizeof(short));
-        if(nrof_minutiae<=0)
-            continue;
-        if(nrof_minutiae>Max_Nrof_Minutiae)
-        {
-            cout<<"Number of minutiae is larger than Max Number of Minutiae:"<< nrof_minutiae << ">"<< Max_Nrof_Minutiae<<endl;
-            return 2;
-        }
-        if(blkH>Max_BlkSize || blkW>Max_BlkSize)
-        {
-            cout<<"The size of the ridge flow is larger than maximum size:"<< Max_BlkSize<<endl;
-            return 4;
-        }
-        is.read(reinterpret_cast<char*>(x),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(y),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(ori),sizeof(float)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(&des_len),sizeof(short));
-
-        is.read(reinterpret_cast<char*>(des),sizeof(float)*nrof_minutiae*des_len);
-
-        MinutiaeTemplate minu_template(nrof_minutiae,x,y,ori,des_len,des,blkH, blkW, oimg);
-        fp_template.add_template(minu_template);
-    }
-
-    is.read(reinterpret_cast<char*>(&nrof_texture_template),sizeof(unsigned char));
-
-   for(i=0;i<nrof_texture_template; ++i)
-    {
-        is.read(reinterpret_cast<char*>(&nrof_minutiae),sizeof(short));
-        if(nrof_minutiae<=0)
-            continue;
-        if(nrof_minutiae>Max_Nrof_Minutiae)
-        {
-            cout<<"Number of minutiae is larger than Max Number of Minutiae:"<< nrof_minutiae << ">"<< Max_Nrof_Minutiae<<endl;
-            return -1;
-        }
-        is.read(reinterpret_cast<char*>(x),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(y),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(ori),sizeof(float)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(&des_len),sizeof(short));
-        is.read(reinterpret_cast<char*>(des),sizeof(float)*nrof_minutiae*des_len);
-
-        RolledTextureTemplatePQ texture_template(nrof_minutiae,x,y,ori,des_len,des);
-        fp_template.add_texture_template(texture_template);
-    }
-    is.close();
-
-    return 0;
+	is.read(reinterpret_cast<char *>(buf.data()), buf.size());
+	return (load_rolled_template(buf));
 }
-#endif
 
 RolledFPTemplate Matcher::load_rolled_template(const std::vector<uint8_t> &buf) const
 {
