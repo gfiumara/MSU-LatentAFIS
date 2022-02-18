@@ -893,9 +893,9 @@ int Matcher::load_FP_template(string tname, LatentFPTemplate & fp_template)
 }
 #endif
 
-void Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate & fp_template) const
+LatentFPTemplate Matcher::load_latent_template(const std::vector<uint8_t> &buf) const
 {
-    fp_template.release();
+    LatentFPTemplate fp_template{};
     const short Max_Nrof_Minutiae = 2*1000; // including virtual minutiae. We only consider top 1000 minutiae including both real and virtual minutiae for each template.
     const short Max_Des_Length = 192;
     const short Max_BlkSize = 100;
@@ -1004,6 +1004,8 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate
         texture_template.compute_dist_to_codewords(this->codewords, nrof_subs,  sub_dim,  nrof_clusters);
         fp_template.add_texture_template(texture_template);
     }
+
+    return (fp_template);
 }
 
 #if 0
@@ -1107,9 +1109,9 @@ int Matcher::load_FP_template(string tname, RolledFPTemplate & fp_template)
 }
 #endif
 
-void Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate & fp_template) const
+RolledFPTemplate Matcher::load_rolled_template(const std::vector<uint8_t> &buf) const
 {
-    fp_template.release();
+    RolledFPTemplate fp_template{};
     const short Max_Nrof_Minutiae = 2*1000; // including virtual minutiae. We only consider top 1000 minutiae including both real and virtual minutiae for each template.
     const short Max_Des_Length = 192;
     const short Max_BlkSize = 100;
@@ -1218,6 +1220,8 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate
         RolledTextureTemplatePQ texture_template(nrof_minutiae,x,y,ori,des_len,des);
         fp_template.add_texture_template(texture_template);
     }
+
+    return (fp_template);
 }
 
 #if 0

@@ -51,8 +51,8 @@ public:
     int load_FP_template(string tname, RolledFPTemplate & fp_template);
     int load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu_template);
 #endif
-    void load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate & fp_template) const;
-    void load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate & fp_template) const;
+    LatentFPTemplate load_latent_template(const std::vector<uint8_t> &buf) const;
+    RolledFPTemplate load_rolled_template(const std::vector<uint8_t> &buf) const;
 
 private:
     vector<tuple<float, int, int>>  LSS_R_Fast2_Dist(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template,const SingleTemplate & rolled_template, float d_thr=30.0) const;
