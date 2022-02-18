@@ -28,8 +28,8 @@ using namespace std::chrono;
 
 namespace PQ
 {
-    const int MaxNRolledMinu = 1000;
-    const int MaxNLatentMinu = 1000;
+    const unsigned long MaxNRolledMinu = 1000;
+    const unsigned long MaxNLatentMinu = 1000;
 
 class Matcher final {
 

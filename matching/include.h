@@ -51,15 +51,13 @@ class SingleTemplate
 	SingleTemplate(const TemplateType type) : m_template_type{type}{};
 
         SingleTemplate(const int nrof_minutiae, const int des_length):
-            m_nrof_minu(nrof_minutiae),
             m_des_length(des_length),
-            m_des(m_nrof_minu*m_des_length),
-            m_minutiae(m_nrof_minu)
+            m_des(nrof_minutiae*m_des_length),
+            m_minutiae(nrof_minutiae)
         {
         };
 
         SingleTemplate(const int nrof_minutiae, const int des_length, const std::vector<float> des, const int blkH, const int blkW):
-        m_nrof_minu{nrof_minutiae},
         m_des_length{des_length},
         m_blkH{blkH},
         m_blkW{blkW},
@@ -69,7 +67,6 @@ class SingleTemplate
         }
 
         SingleTemplate(const int nrof_minutiae, const int des_length, const std::vector<float> des):
-        m_nrof_minu{nrof_minutiae},
         m_des_length{des_length},
         m_des{des},
         m_minutiae(nrof_minutiae)
@@ -78,21 +75,21 @@ class SingleTemplate
 
         void set_x(const std::vector<short> &x)
         {
-            for(int i=0;i<m_nrof_minu; ++i)
+            for(int i=0;i<this->m_minutiae.size(); ++i)
             {
                 m_minutiae[i].x = x[i];
             }
         }
         void set_y(const std::vector<short> &y)
         {
-            for(int i=0;i<m_nrof_minu; ++i)
+            for(int i=0;i<this->m_minutiae.size(); ++i)
             {
                 m_minutiae[i].y = y[i];
             }
         };
         void set_ori(const std::vector<float> &ori)
         {
-            for(int i=0;i<m_nrof_minu; ++i)
+            for(int i=0;i<this->m_minutiae.size(); ++i)
             {
                 m_minutiae[i].ori = ori[i];
             }
@@ -101,7 +98,7 @@ class SingleTemplate
             m_template_type = template_type;
         };
         void init_des(){
-            m_des = std::vector<float>(m_nrof_minu*m_des_length);
+            m_des = std::vector<float>(this->m_minutiae.size()*m_des_length);
         }
 
 };
@@ -153,11 +150,10 @@ class TextureTemplate: public SingleTemplate
 
         void initialization(const int nrof_minutiae, const int des_length)
         {
-            m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
-            m_des = std::vector<float>(m_nrof_minu*m_des_length);
+            m_des = std::vector<float>(nrof_minutiae*m_des_length);
 
-            m_minutiae = std::vector<MinuPoint>(m_nrof_minu);
+            m_minutiae = std::vector<MinuPoint>(nrof_minutiae);
             m_block_size = 16;
         };
 };
@@ -179,10 +175,10 @@ class LatentTextureTemplate: public TextureTemplate
 
         void compute_dist_to_codewords(const std::vector<float> &codewords, const int nrof_subs, const int sub_dim,  const int nrof_clusters)
         {
-            m_dist_codewords.resize(m_nrof_minu*nrof_subs*nrof_clusters);
+            m_dist_codewords.resize(this->m_minutiae.size()*nrof_subs*nrof_clusters);
 
             float *pword2;
-            for(int i=0; i<m_nrof_minu ; ++i)
+            for(int i=0; i<this->m_minutiae.size() ; ++i)
             {
                 float *pdes0 = m_des.data() +  i*m_des_length;
 
@@ -219,14 +215,13 @@ class RolledTextureTemplatePQ:public TextureTemplate
         void initialization(const int nrof_minutiae, const int des_length)
         {
             // release();
-            m_nrof_minu = nrof_minutiae;
             m_des_length = des_length;
-            m_desPQ = std::vector<unsigned char>(m_nrof_minu*m_des_length);
-            m_minutiae = std::vector<MinuPoint>(m_nrof_minu);
+            m_desPQ = std::vector<unsigned char>(nrof_minutiae*m_des_length);
+            m_minutiae = std::vector<MinuPoint>(nrof_minutiae);
             m_block_size = 16;
         }
         RolledTextureTemplatePQ(const int nrof_minutiae, const int des_length):TextureTemplate(nrof_minutiae, des_length),
-            m_desPQ(m_nrof_minu*m_des_length)
+            m_desPQ(nrof_minutiae*m_des_length)
         {
         }
 
@@ -242,8 +237,6 @@ class RolledTextureTemplatePQ:public TextureTemplate
 class FPTemplate
 {
     public:
-        int m_nrof_minu_templates{0};
-        int m_nrof_texture_templates{0};
         std::vector<MinutiaeTemplate> m_minu_templates{};
         FPType m_FP_type;
 
@@ -252,17 +245,12 @@ class FPTemplate
         };
         void add_template(const MinutiaeTemplate & minutiae_template)
         {
-
             m_minu_templates.push_back(minutiae_template);
-            m_nrof_minu_templates++;
-
         };
 
         void release()
         {
             m_minu_templates.clear();
-            m_nrof_minu_templates = 0;
-            m_nrof_texture_templates = 0;
         }
 };
 
@@ -278,11 +266,9 @@ public:
     void add_texture_template(const LatentTextureTemplate &texture_template)
     {
         m_texture_templates.push_back(texture_template);
-        m_nrof_texture_templates++;
     };
     void release_texture_templates(){
         m_texture_templates.clear();
-        m_nrof_texture_templates = 0;
     }
 };
 
@@ -297,13 +283,11 @@ public:
     }
     void release_texture_templates(){
         m_texture_templates.clear();
-        m_nrof_texture_templates = 0;
     }
     void add_texture_template(const RolledTextureTemplatePQ & texture_template)
     {
         RolledTextureTemplatePQ texture_template_new(texture_template);
         m_texture_templates.push_back(texture_template_new);
-        m_nrof_texture_templates++;
     };
 };
 

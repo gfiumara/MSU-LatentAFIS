@@ -148,9 +148,9 @@ int Matcher::List2List_matching(string latent_path, string rolled_path, string s
             LatentFPTemplate latent_FP;
             //load latent original template and create a latent FP object
             load_FP_template(latent_template_files[i].string(), latent_FP);
-            cout<<"Latent minutiae templates: "<<latent_FP.m_nrof_minu_templates<<endl;
-            cout<<"Latent texture templates: "<<latent_FP.m_nrof_texture_templates<<endl;
-            if(latent_FP.m_nrof_minu_templates<=0 && latent_FP.m_nrof_texture_templates<=0)
+            cout<<"Latent minutiae templates: "<<latent_FP.m_minu_templates.size()<<endl;
+            cout<<"Latent texture templates: "<<latent_FP.m_texture_templates.size()<<endl;
+            if(latent_FP.m_minu_templates.size()<=0 && latent_FP.m_texture_templates.size()<=0)
             {
 				cout<<"No minutiae or texture templates found"<<endl;
                 ofstream output;
@@ -172,8 +172,8 @@ int Matcher::List2List_matching(string latent_path, string rolled_path, string s
                 RolledFPTemplate rolled_FP;
                 if(load_FP_template(rolled_template_files[j].string(), rolled_FP)<0)
                 {
-                    rolled_FP.m_nrof_minu_templates=0;
-                    rolled_FP.m_nrof_texture_templates = 0;
+                    rolled_FP.m_minu_templates.size()=0;
+                    rolled_FP.m_texture_templates.size() = 0;
                 }
 
 				vector<float> score;
@@ -257,7 +257,7 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
         LatentFPTemplate latent_FP;
         //load latent original template and create a latent FP object
         load_FP_template(latent_template_file.string(), latent_FP);
-        if(latent_FP.m_nrof_minu_templates<=0 && latent_FP.m_nrof_texture_templates<=0)
+        if(latent_FP.m_minu_templates.size()<=0 && latent_FP.m_texture_templates.size()<=0)
         {
             ofstream output;
             output.open(score_file);
@@ -277,8 +277,8 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
             RolledFPTemplate rolled_FP;
             if(load_FP_template(rolled_template_files[j].string(), rolled_FP)<0)
             {
-                rolled_FP.m_nrof_minu_templates=0;
-                rolled_FP.m_nrof_texture_templates = 0;
+                rolled_FP.m_minu_templates.size()=0;
+                rolled_FP.m_texture_templates.size() = 0;
             }
 
             vector<float> score;
@@ -339,15 +339,15 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
 int Matcher::One2One_matching_all_templates(const LatentFPTemplate &latent_template, const RolledFPTemplate &rolled_template, vector<float> & score)
 {
 
-    score.resize(latent_template.m_nrof_minu_templates + latent_template.m_nrof_texture_templates);
+    score.resize(latent_template.m_minu_templates.size() + latent_template.m_texture_templates.size());
     std::fill(score.begin(), score.end(), 0);
 
-   if(latent_template.m_nrof_minu_templates<=0 && latent_template.m_nrof_texture_templates<=0)
+   if(latent_template.m_minu_templates.size()<=0 && latent_template.m_texture_templates.size()<=0)
    {
         return 1;
     }
 
-    if(rolled_template.m_nrof_minu_templates<=0 && rolled_template.m_nrof_texture_templates<=0)
+    if(rolled_template.m_minu_templates.size()<=0 && rolled_template.m_texture_templates.size()<=0)
     {
         return 2;
     }
@@ -358,17 +358,17 @@ int Matcher::One2One_matching_all_templates(const LatentFPTemplate &latent_templ
 
     t[0] = high_resolution_clock::now();
 
-    for(i=0;i<latent_template.m_nrof_minu_templates && rolled_template.m_nrof_minu_templates; ++i)
+    for(i=0;i<latent_template.m_minu_templates.size() && rolled_template.m_minu_templates.size(); ++i)
     {
         float s = One2One_minutiae_matching(latent_template.m_minu_templates[i], rolled_template.m_minu_templates[0]);
         score[i] = s;
     }
     t[1] = high_resolution_clock::now();
 
-    for(i=0;i<latent_template.m_nrof_texture_templates && rolled_template.m_nrof_texture_templates>0 ; ++i)
+    for(i=0;i<latent_template.m_texture_templates.size() && rolled_template.m_texture_templates.size()>0 ; ++i)
     {
         float s = One2One_texture_matching(latent_template.m_texture_templates[i], rolled_template.m_texture_templates[0]);
-        score[i+latent_template.m_nrof_minu_templates] = s;
+        score[i+latent_template.m_minu_templates.size()] = s;
     }
 
    return 0;
@@ -377,17 +377,17 @@ int Matcher::One2One_matching_all_templates(const LatentFPTemplate &latent_templ
 int Matcher::One2One_matching_selected_templates(const LatentFPTemplate &latent_template, const RolledFPTemplate &rolled_template, vector<float> & score, bool save_corr, string corr_file)
 const
 {
-    score.resize(latent_template.m_nrof_minu_templates + latent_template.m_nrof_texture_templates);
+    score.resize(latent_template.m_minu_templates.size() + latent_template.m_texture_templates.size());
     std::fill(score.begin(), score.end(), 0);
     vector<int> selected_ind{27-1, 3-1, 12-1};
 
 
-    if(latent_template.m_nrof_minu_templates<=selected_ind[0] && latent_template.m_nrof_texture_templates<=0)
+    if(latent_template.m_minu_templates.size()<=selected_ind[0] && latent_template.m_texture_templates.size()<=0)
     {
         return 1;
     }
 
-    if(rolled_template.m_nrof_minu_templates<=0 && rolled_template.m_nrof_texture_templates<=0)
+    if(rolled_template.m_minu_templates.size()<=0 && rolled_template.m_texture_templates.size()<=0)
     {
         return 2;
     }
@@ -399,10 +399,10 @@ const
     t[0] = high_resolution_clock::now();
 
 
-    for(i=0;i<selected_ind.size() && rolled_template.m_nrof_minu_templates>0; ++i)
+    for(i=0;i<selected_ind.size() && rolled_template.m_minu_templates.size()>0; ++i)
     {
         int ind = selected_ind[i];
-        if(latent_template.m_nrof_minu_templates<=ind)
+        if(latent_template.m_minu_templates.size()<=ind)
             continue;
         string one_corr_file = corr_file + "_" + to_string(i) + ".csv";
         float s = One2One_minutiae_matching(latent_template.m_minu_templates[ind], rolled_template.m_minu_templates[0], save_corr, one_corr_file);
@@ -410,10 +410,10 @@ const
     }
     t[1] = high_resolution_clock::now();
 
-    for(i=0;i<min(1,latent_template.m_nrof_texture_templates) && rolled_template.m_nrof_texture_templates>0 ; ++i)
+    for(i=0;i<min(1ul,latent_template.m_texture_templates.size()) && rolled_template.m_texture_templates.size()>0 ; ++i)
     {
         float s = One2One_texture_matching(latent_template.m_texture_templates[i], rolled_template.m_texture_templates[0]);
-        score[i+latent_template.m_nrof_minu_templates] = s;
+        score[i+latent_template.m_minu_templates.size()] = s;
     }
 
     return 0;
@@ -444,14 +444,14 @@ const
     using namespace std::chrono;
     vector<high_resolution_clock::time_point> t(10);
 
-    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> aa =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(latent_minu_template.m_des.data(),latent_minu_template.m_nrof_minu,des_len);
-    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> bb =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(rolled_minu_template.m_des.data(),rolled_minu_template.m_nrof_minu,des_len);
+    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> aa =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(latent_minu_template.m_des.data(),latent_minu_template.m_minutiae.size(),des_len);
+    Matrix<float, Eigen::Dynamic, Eigen::Dynamic> bb =  Map<Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(rolled_minu_template.m_des.data(),rolled_minu_template.m_minutiae.size(),des_len);
 
     MatrixXf  simi_matrix=aa*bb.transpose();
 
-    for(i=0; i<latent_minu_template.m_nrof_minu; ++i)
+    for(i=0; i<latent_minu_template.m_minutiae.size(); ++i)
     {
-        for(j = 0; j<rolled_minu_template.m_nrof_minu; ++j)
+        for(j = 0; j<rolled_minu_template.m_minutiae.size(); ++j)
         {
             if(simi_matrix(i,j)<0)
                 simi_matrix(i,j) = 0;
@@ -463,12 +463,12 @@ const
     VectorXf  latent_simi_sum = simi_matrix.rowwise().sum();
 
     int ind_1, ind_2 ;
-    vector<float> norm_simi_matrix(latent_minu_template.m_nrof_minu*rolled_minu_template.m_nrof_minu);
+    vector<float> norm_simi_matrix(latent_minu_template.m_minutiae.size()*rolled_minu_template.m_minutiae.size());
     float norm_simi=0.0;
-    for(i=0; i<latent_minu_template.m_nrof_minu; ++i)
+    for(i=0; i<latent_minu_template.m_minutiae.size(); ++i)
     {
-        ind_1 = i*rolled_minu_template.m_nrof_minu;
-        for(j = 0; j<rolled_minu_template.m_nrof_minu; ++j)
+        ind_1 = i*rolled_minu_template.m_minutiae.size();
+        for(j = 0; j<rolled_minu_template.m_minutiae.size(); ++j)
         {
             ind_2  = ind_1 + j;
             norm_simi = simi_matrix(i,j)/(latent_simi_sum(i) + rolled_simi_sum(j) - simi_matrix(i,j)+0.000001); // //simi_matrix[ind_2]*
@@ -484,12 +484,12 @@ const
 
     std::vector<tuple<float, int, int>>corr;
     int topN = 120;
-    if(rolled_minu_template.m_nrof_minu*latent_minu_template.m_nrof_minu<topN)
-        topN = rolled_minu_template.m_nrof_minu*latent_minu_template.m_nrof_minu;
+    if(rolled_minu_template.m_minutiae.size()*latent_minu_template.m_minutiae.size()<topN)
+        topN = rolled_minu_template.m_minutiae.size()*latent_minu_template.m_minutiae.size();
     for(i=0; i<topN ; ++i)
     {
-        ind_1 = y[i]/rolled_minu_template.m_nrof_minu; // latent minutiae  index
-        ind_2 = y[i] - ind_1*rolled_minu_template.m_nrof_minu; // rolled minutiae index
+        ind_1 = y[i]/rolled_minu_template.m_minutiae.size(); // latent minutiae  index
+        ind_2 = y[i] - ind_1*rolled_minu_template.m_minutiae.size(); // rolled minutiae index
         simi = simi_matrix(ind_1,ind_2);
         corr.push_back(make_tuple(simi,ind_1,ind_2));
     }
@@ -549,8 +549,8 @@ const
    std::unique_ptr<float[]> simi_matrix{new float[MaxNRolledMinu*MaxNLatentMinu]};
    memset(simi_matrix.get(),0,MaxNRolledMinu*MaxNLatentMinu*sizeof(float));
 
-    const int numLatentMinutiae = std::min(latent_texture_template.m_nrof_minu, MaxNLatentMinu);
-    const int numExemplarMinutiae = std::min(rolled_texture_template.m_nrof_minu, MaxNRolledMinu);
+    const int numLatentMinutiae = std::min(latent_texture_template.m_minutiae.size(), MaxNLatentMinu);
+    const int numExemplarMinutiae = std::min(rolled_texture_template.m_minutiae.size(), MaxNRolledMinu);
 
     float simi = 0.0;
     float *p_latent_des, *p_latent_des0, *p_rolled_des;
@@ -1334,7 +1334,7 @@ const
     int num = corr.size();
     vector<float> H(num*num);
 
-    vector<short> flag_latent(latent_template.m_nrof_minu),flag_rolled(rolled_template.m_nrof_minu);
+    vector<short> flag_latent(latent_template.m_minutiae.size()),flag_rolled(rolled_template.m_minutiae.size());
 
     int i,j,k;
 
@@ -1459,7 +1459,7 @@ const
 {
     int num = corr.size();
     std::unique_ptr<float[]> H{new float [num*num]()};
-    vector<short> flag_latent(latent_template.m_nrof_minu),flag_rolled(rolled_template.m_nrof_minu);
+    vector<short> flag_latent(latent_template.m_minutiae.size()),flag_rolled(rolled_template.m_minutiae.size());
 
     int i,j,k;
 
@@ -1584,7 +1584,7 @@ const
     int num = corr.size();
     std::unique_ptr<float[]> H{new float [num*num]()};
 
-    vector<short> flag_latent(latent_template.m_nrof_minu),flag_rolled(rolled_template.m_nrof_minu);
+    vector<short> flag_latent(latent_template.m_minutiae.size()),flag_rolled(rolled_template.m_minutiae.size());
 
     int i,j,k;
 
@@ -1704,7 +1704,7 @@ const
 {
     int num = corr.size();
     vector<bool> H(num*num);
-    vector<short> flag_latent(latent_template.m_nrof_minu),flag_rolled(rolled_template.m_nrof_minu);
+    vector<short> flag_latent(latent_template.m_minutiae.size()),flag_rolled(rolled_template.m_minutiae.size());
 
     int i,j,k;
 
