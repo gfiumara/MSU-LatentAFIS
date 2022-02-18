@@ -146,7 +146,19 @@ int Matcher::List2List_matching(string latent_path, string rolled_path, string s
             cout<<latent_template_files[i]<<endl;
 
             //load latent original template and create a latent FP object
-            auto latent_FP = load_latent_template(latent_template_files[i].string());
+            LatentFPTemplate latent_FP{};
+            try {
+	            latent_FP = load_latent_template(latent_template_files[i].string());
+	    } catch (const std::exception&) {
+	    	cout<<"No minutiae or texture templates found"<<endl;
+                ofstream output;
+                output.open(score_path + latent_template_files[i].stem().string() + ".csv");
+
+                output<<0<<endl;
+                output.close();
+
+                continue;
+	    }
             cout<<"Latent minutiae templates: "<<latent_FP.m_minu_templates.size()<<endl;
             cout<<"Latent texture templates: "<<latent_FP.m_texture_templates.size()<<endl;
             if(latent_FP.m_minu_templates.size()<=0 && latent_FP.m_texture_templates.size()<=0)
@@ -254,7 +266,18 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
         vector<float> scores(nrof_rolled, -1);
         cout<<"Latent Query: "<<latent_template_file<<endl;
         cout<<"Gallery size: "<<nrof_rolled<<endl;
-        LatentFPTemplate latent_FP = load_latent_template(latent_template_file.string());
+
+
+        LatentFPTemplate latent_FP;
+        try {
+        	latent_FP = load_latent_template(latent_template_file.string());
+        } catch (const std::exception&) {
+            ofstream output;
+            output.open(score_file);
+
+            output<<0<<endl;
+            output.close();
+        }
         if(latent_FP.m_minu_templates.size()<=0 && latent_FP.m_texture_templates.size()<=0)
         {
             ofstream output;
@@ -529,8 +552,19 @@ const
 
 int Matcher::One2One_matching(string latent_file, string rolled_file)
 {
-    auto latent_template = load_latent_template(latent_file);
-    auto rolled_template = load_rolled_template(rolled_file);
+    LatentFPTemplate latent_template{};
+    try {
+    	load_latent_template(latent_file);
+    } catch (const std::exception&) {
+    	return (1);
+    }
+
+    RolledFPTemplate rolled_template{};
+    try {
+	    rolled_template = load_rolled_template(rolled_file);
+    } catch (const std::exception&) {
+    	return (2);
+    }
 
     vector<float> score;
     int ret = One2One_matching_selected_templates(latent_template, rolled_template, score);
