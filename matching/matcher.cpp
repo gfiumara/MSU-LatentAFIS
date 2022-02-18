@@ -92,6 +92,7 @@ Matcher::Matcher(string code_file)
     }
 }
 
+#if 0
 int Matcher::List2List_matching(string latent_path, string rolled_path, string score_path)
 {
     string template_file, score_file;
@@ -334,7 +335,7 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
     }
     return 0;
 }
-
+#endif
 int Matcher::One2One_matching_all_templates(const LatentFPTemplate &latent_template, const RolledFPTemplate &rolled_template, vector<float> & score)
 {
 
@@ -521,6 +522,7 @@ const
 
 }
 
+#if 0
 int Matcher::One2One_matching(string latent_file, string rolled_file)
 {
     LatentFPTemplate latent_template;
@@ -533,6 +535,7 @@ int Matcher::One2One_matching(string latent_file, string rolled_file)
 
     return ret;
 }
+#endif
 
 float Matcher::One2One_texture_matching(const LatentTextureTemplate &latent_texture_template, const RolledTextureTemplatePQ &rolled_texture_template)
 const
@@ -787,6 +790,7 @@ const
 
 }
 
+#if 0
 int Matcher::load_FP_template(string tname, LatentFPTemplate & fp_template)
 {
     fp_template.release();
@@ -887,6 +891,7 @@ int Matcher::load_FP_template(string tname, LatentFPTemplate & fp_template)
 
     return 0;
 }
+#endif
 
 void Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate & fp_template) const
 {
@@ -918,12 +923,10 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate
     short des_len;
     int i,j;
 
-    std::unique_ptr<short[]> x{new short[Max_Nrof_Minutiae]};
-    std::unique_ptr<short[]> y{new short[Max_Nrof_Minutiae]};
-    std::unique_ptr<float[]> ori{new float[Max_Nrof_Minutiae]};
-    std::unique_ptr<float[]> oimg{new float[Max_BlkSize*Max_BlkSize]};
-
-    float des[Max_Nrof_Minutiae*Max_Des_Length];
+    std::vector<short> x(Max_Nrof_Minutiae);
+    std::vector<short> y(Max_Nrof_Minutiae);
+    std::vector<float> ori(Max_Nrof_Minutiae);
+    std::vector<float> des(Max_Nrof_Minutiae*Max_Des_Length);
 
     for(int i=0; i<12; i++){
         is.read(reinterpret_cast<char*>(&header[i]),sizeof(short));
@@ -966,14 +969,14 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate
             throw std::runtime_error{"The size of the ridge flow is larger "
                 "than maximum size: " + std::to_string(Max_BlkSize)};
         }
-        is.read(reinterpret_cast<char*>(x.get()),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(y.get()),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(ori.get()),sizeof(float)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(x.data()),sizeof(short)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(y.data()),sizeof(short)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(ori.data()),sizeof(float)*nrof_minutiae);
         is.read(reinterpret_cast<char*>(&des_len),sizeof(short));
 
-        is.read(reinterpret_cast<char*>(des),sizeof(float)*nrof_minutiae*des_len);
+        is.read(reinterpret_cast<char*>(des.data()),sizeof(float)*nrof_minutiae*des_len);
 
-        MinutiaeTemplate minu_template(nrof_minutiae,x.get(),y.get(),ori.get(),des_len,des,blkH, blkW, oimg.get());
+        MinutiaeTemplate minu_template(nrof_minutiae,x,y,ori,des_len,des,blkH, blkW);
         fp_template.add_template(minu_template);
     }
 
@@ -990,19 +993,20 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate
                 "Number of Minutiae: " + std::to_string(nrof_minutiae) + ">" +
                 std::to_string(Max_Nrof_Minutiae)};
         }
-        is.read(reinterpret_cast<char*>(x.get()),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(y.get()),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(ori.get()),sizeof(float)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(x.data()),sizeof(short)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(y.data()),sizeof(short)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(ori.data()),sizeof(float)*nrof_minutiae);
         is.read(reinterpret_cast<char*>(&des_len),sizeof(short));
-        is.read(reinterpret_cast<char*>(des),sizeof(float)*nrof_minutiae*des_len);
+        is.read(reinterpret_cast<char*>(des.data()),sizeof(float)*nrof_minutiae*des_len);
 
 
-        LatentTextureTemplate texture_template(nrof_minutiae,x.get(),y.get(),ori.get(),des_len,des);
+        LatentTextureTemplate texture_template(nrof_minutiae,x,y,ori,des_len,des);
         texture_template.compute_dist_to_codewords(this->codewords, nrof_subs,  sub_dim,  nrof_clusters);
         fp_template.add_texture_template(texture_template);
     }
 }
 
+#if 0
 int Matcher::load_FP_template(string tname, RolledFPTemplate & fp_template)
 {
     fp_template.release();
@@ -1101,6 +1105,7 @@ int Matcher::load_FP_template(string tname, RolledFPTemplate & fp_template)
 
     return 0;
 }
+#endif
 
 void Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate & fp_template) const
 {
@@ -1133,13 +1138,12 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate
     short des_len=96;
     int i,j;
 
-    std::unique_ptr<short[]> x{new short[Max_Nrof_Minutiae]};
-    std::unique_ptr<short[]> y{new short[Max_Nrof_Minutiae]};
-    std::unique_ptr<float[]> ori{new float[Max_Nrof_Minutiae]};
-    std::unique_ptr<float[]> reliability{new float[Max_Nrof_Minutiae]};
-    std::unique_ptr<float[]> oimg{new float[Max_BlkSize*Max_BlkSize]};
+    std::vector<short> x(Max_Nrof_Minutiae);
+    std::vector<short> y(Max_Nrof_Minutiae);
+    std::vector<float> ori(Max_Nrof_Minutiae);
+    std::vector<float> reliability(Max_Nrof_Minutiae);
 
-    std::unique_ptr<float[]> des{new float[Max_Nrof_Minutiae*Max_Des_Length]};
+    std::vector<float> des(Max_Nrof_Minutiae*Max_Des_Length);
 
     for(int i=0; i<12; i++){
         is.read(reinterpret_cast<char*>(&header[i]),sizeof(short));
@@ -1181,14 +1185,14 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate
             throw std::runtime_error{"The size of the ridge flow is larger "
                 "than maximum size: " + std::to_string(Max_BlkSize)};
         }
-        is.read(reinterpret_cast<char*>(x.get()),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(y.get()),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(ori.get()),sizeof(float)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(x.data()),sizeof(short)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(y.data()),sizeof(short)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(ori.data()),sizeof(float)*nrof_minutiae);
         is.read(reinterpret_cast<char*>(&des_len),sizeof(short));
 
-        is.read(reinterpret_cast<char*>(des.get()),sizeof(float)*nrof_minutiae*des_len);
+        is.read(reinterpret_cast<char*>(des.data()),sizeof(float)*nrof_minutiae*des_len);
 
-        MinutiaeTemplate minu_template(nrof_minutiae,x.get(),y.get(),ori.get(),des_len,des.get(),blkH, blkW, oimg.get());
+        MinutiaeTemplate minu_template(nrof_minutiae,x,y,ori,des_len,des,blkH, blkW);
         fp_template.add_template(minu_template);
     }
 
@@ -1205,17 +1209,18 @@ void Matcher::load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate
                 "Number of Minutiae: " + std::to_string(nrof_minutiae) + ">" +
                 std::to_string(Max_Nrof_Minutiae)};
         }
-        is.read(reinterpret_cast<char*>(x.get()),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(y.get()),sizeof(short)*nrof_minutiae);
-        is.read(reinterpret_cast<char*>(ori.get()),sizeof(float)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(x.data()),sizeof(short)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(y.data()),sizeof(short)*nrof_minutiae);
+        is.read(reinterpret_cast<char*>(ori.data()),sizeof(float)*nrof_minutiae);
         is.read(reinterpret_cast<char*>(&des_len),sizeof(short));
-        is.read(reinterpret_cast<char*>(des.get()),sizeof(float)*nrof_minutiae*des_len);
+        is.read(reinterpret_cast<char*>(des.data()),sizeof(float)*nrof_minutiae*des_len);
 
-        RolledTextureTemplatePQ texture_template(nrof_minutiae,x.get(),y.get(),ori.get(),des_len,des.get());
+        RolledTextureTemplatePQ texture_template(nrof_minutiae,x,y,ori,des_len,des);
         fp_template.add_texture_template(texture_template);
     }
 }
 
+#if 0
 int Matcher::load_single_template(string tname, TextureTemplate& texture_template)
 {
     ifstream is;
@@ -1321,6 +1326,7 @@ int Matcher::load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu
     cout<<tname<<endl;
     return 0;
 }
+#endif
 
 vector<tuple<float, int, int>>  Matcher::LSS_R_Fast2_Dist(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template, const SingleTemplate & rolled_template, float d_thr)
 const

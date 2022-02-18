@@ -36,19 +36,23 @@ class Matcher final {
 
 public:
     Matcher(string code_file);
+#if 0
     int List2List_matching(string latent_list_file, string rolled_list_file, string output_file);
     int One2List_matching(string latent_template_file, string rolled_list_file, string score_file);
+#endif
     float One2One_minutiae_matching(const MinutiaeTemplate  &latent_minu_template, const MinutiaeTemplate  &rolled_minu_template, bool save_corr = false, string corr_file = "") const;
     float One2One_texture_matching(const LatentTextureTemplate &latent_texture_template, const RolledTextureTemplatePQ &rolled_minu_template) const;
     int One2One_matching_selected_templates(const LatentFPTemplate &latent_template, const RolledFPTemplate &rolled_template, vector<float> & score, bool save_corr = false, string corr_file = "") const;
     int One2One_matching_all_templates(const LatentFPTemplate &latent_template, const RolledFPTemplate &rolled_template, vector<float> & score);
+#if 0
     int One2One_matching(string latent_file, string rolled_file);
     int load_single_template(string tname, TextureTemplate& texture_template);
     int load_FP_template(string tname, LatentFPTemplate & fp_template);
-    void load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate & fp_template) const;
     int load_FP_template(string tname, RolledFPTemplate & fp_template);
-    void load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate & fp_template) const;
     int load_single_PQ_template(string tname, RolledTextureTemplatePQ& minu_template);
+#endif
+    void load_FP_template(const std::vector<uint8_t> &buf, LatentFPTemplate & fp_template) const;
+    void load_FP_template(const std::vector<uint8_t> &buf, RolledFPTemplate & fp_template) const;
 
 private:
     vector<tuple<float, int, int>>  LSS_R_Fast2_Dist(vector<tuple<float, int, int>> &corr, const SingleTemplate & latent_template,const SingleTemplate & rolled_template, float d_thr=30.0) const;
