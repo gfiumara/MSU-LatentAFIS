@@ -15,7 +15,6 @@
 #define INCLUDE_H
 
 #include <cmath>
-#include <cstring>
 #include <numeric>
 #include <vector>
 

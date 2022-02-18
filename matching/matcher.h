@@ -13,7 +13,6 @@
 
 #ifndef MATCHER_INT_H
 #define MATCHER_INT_H
-#include <cstdlib>
 #include <type_traits>
 #include <string>
 #include <iostream>
@@ -22,7 +21,6 @@
 #include"include.h"
 
 using namespace std;
-using namespace std::chrono;
 #define PI 3.1415926
 #define EIGEN_DONT_PARALLELIZE
 
