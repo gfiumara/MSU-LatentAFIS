@@ -92,7 +92,7 @@ Matcher::Matcher(string code_file)
     }
 }
 
-#if 0
+
 int Matcher::List2List_matching(string latent_path, string rolled_path, string score_path)
 {
     string template_file, score_file;
@@ -145,9 +145,8 @@ int Matcher::List2List_matching(string latent_path, string rolled_path, string s
             vector<float> scores(nrof_rolled, -1);
             cout<<latent_template_files[i]<<endl;
 
-            LatentFPTemplate latent_FP;
             //load latent original template and create a latent FP object
-            load_FP_template(latent_template_files[i].string(), latent_FP);
+            auto latent_FP = load_latent_template(latent_template_files[i].string());
             cout<<"Latent minutiae templates: "<<latent_FP.m_minu_templates.size()<<endl;
             cout<<"Latent texture templates: "<<latent_FP.m_texture_templates.size()<<endl;
             if(latent_FP.m_minu_templates.size()<=0 && latent_FP.m_texture_templates.size()<=0)
@@ -170,10 +169,11 @@ int Matcher::List2List_matching(string latent_path, string rolled_path, string s
             {
 
                 RolledFPTemplate rolled_FP;
-                if(load_FP_template(rolled_template_files[j].string(), rolled_FP)<0)
-                {
-                    rolled_FP.m_minu_templates.size()=0;
-                    rolled_FP.m_texture_templates.size() = 0;
+                try {
+                	rolled_FP = load_rolled_template(rolled_template_files[j].string());
+                } catch (const std::exception&) {
+                    rolled_FP.m_minu_templates.clear();
+                    rolled_FP.m_texture_templates.clear();
                 }
 
 				vector<float> score;
@@ -254,9 +254,7 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
         vector<float> scores(nrof_rolled, -1);
         cout<<"Latent Query: "<<latent_template_file<<endl;
         cout<<"Gallery size: "<<nrof_rolled<<endl;
-        LatentFPTemplate latent_FP;
-        //load latent original template and create a latent FP object
-        load_FP_template(latent_template_file.string(), latent_FP);
+        LatentFPTemplate latent_FP = load_latent_template(latent_template_file.string());
         if(latent_FP.m_minu_templates.size()<=0 && latent_FP.m_texture_templates.size()<=0)
         {
             ofstream output;
@@ -275,10 +273,12 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
         {
 
             RolledFPTemplate rolled_FP;
-            if(load_FP_template(rolled_template_files[j].string(), rolled_FP)<0)
-            {
-                rolled_FP.m_minu_templates.size()=0;
-                rolled_FP.m_texture_templates.size() = 0;
+            try {
+            	rolled_FP = load_rolled_template(rolled_template_files[j].string());
+
+            } catch (const std::exception&) {
+                rolled_FP.m_minu_templates.clear();
+                rolled_FP.m_texture_templates.clear();
             }
 
             vector<float> score;
@@ -319,7 +319,12 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
             }
             output<<to_string(j+1)<<rolled_template_files[ind[j]]<<","<<scores[ind[j]]<<endl;
             RolledFPTemplate rolled_FP;
-            load_FP_template(rolled_template_files[ind[j]].string(), rolled_FP);
+            try {
+	            rolled_FP = load_rolled_template(rolled_template_files[ind[j]].string());
+	    } catch (const std::exception&) {
+		    rolled_FP.m_minu_templates.clear();
+                    rolled_FP.m_texture_templates.clear();
+	    }
             string latent_fname = latent_template_file.stem().string();
             string rolled_fname = rolled_template_files[ind[j]].stem().string();
             string corr_file = "/LatentAFIS/scores/corr" + latent_fname + "_" + rolled_fname;
@@ -335,7 +340,7 @@ int Matcher::One2List_matching(string latent_template_file_string, string rolled
     }
     return 0;
 }
-#endif
+
 int Matcher::One2One_matching_all_templates(const LatentFPTemplate &latent_template, const RolledFPTemplate &rolled_template, vector<float> & score)
 {
 
@@ -522,20 +527,16 @@ const
 
 }
 
-#if 0
 int Matcher::One2One_matching(string latent_file, string rolled_file)
 {
-    LatentFPTemplate latent_template;
-    RolledFPTemplate rolled_template;
-    load_FP_template(latent_file,latent_template);
-    load_FP_template(rolled_file,rolled_template);
+    auto latent_template = load_latent_template(latent_file);
+    auto rolled_template = load_rolled_template(rolled_file);
 
     vector<float> score;
     int ret = One2One_matching_selected_templates(latent_template, rolled_template, score);
 
     return ret;
 }
-#endif
 
 float Matcher::One2One_texture_matching(const LatentTextureTemplate &latent_texture_template, const RolledTextureTemplatePQ &rolled_texture_template)
 const
