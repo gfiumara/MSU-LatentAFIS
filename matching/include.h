@@ -15,6 +15,7 @@
 #define INCLUDE_H
 
 #include <cmath>
+#include <cstring>
 #include <numeric>
 #include <vector>
 
@@ -203,6 +204,16 @@ class RolledTextureTemplatePQ:public TextureTemplate
         std::vector<unsigned char> m_desPQ{};
         RolledTextureTemplatePQ() : TextureTemplate() {}
 
+	/*
+	 * FIXME: This hides des_length() from SingleTemplate, but is necessary.
+	 *        Make this a virtual hierarchy?
+	 */
+	int des_length() const  {
+		if (m_desPQ.size() == 0)
+			return (0);
+		return (m_desPQ.size() / m_minutiae.size());
+	}
+
         RolledTextureTemplatePQ(const int nrof_minutiae, const int des_length):TextureTemplate(nrof_minutiae, des_length),
             m_desPQ(nrof_minutiae*des_length)
         {
@@ -211,9 +222,18 @@ class RolledTextureTemplatePQ:public TextureTemplate
         RolledTextureTemplatePQ(const int nrof_minutiae, const std::vector<short> &x,const std::vector<short> &y,const std::vector<float> &ori, const std::vector<float> &des):
         TextureTemplate(nrof_minutiae, x, y, ori, {})
         {
-        	/* FIXME: m_desPQ is unsigned char, but storing floats? Bug? */
-        	for (const float &f : des)
-        		m_desPQ.emplace_back(static_cast<unsigned char>(f));
+        	/*
+        	 * The des vector is already sized with number of minutiae in
+        	 * mind, so we don't need to multiply by it.
+        	 */
+
+         	/*
+         	 * FIXME: m_desPQ is unsigned char, but storing floats? Bug?
+         	 *        Note above we can't pass it to the TextureTemplate
+         	 *        constructor and so it gets duplicated here.
+         	 */
+         	m_desPQ = std::vector<unsigned char>(des.size());
+         	std::memcpy(m_desPQ.data(), des.data(), sizeof(unsigned char)*des.size());
         }
 };
 
