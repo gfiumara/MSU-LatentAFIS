@@ -14,7 +14,9 @@
 #include <cstdlib>
 
 #include <stdio.h>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #include <chrono>
 #include<vector>
 #include<iostream>
