@@ -38,7 +38,6 @@ class SingleTemplate
 {
     public:
         int m_nrof_feature{0};
-        int m_des_length{0};
         int m_block_size{16};
         int m_blkH{0};
         int m_blkW{0};
@@ -50,14 +49,12 @@ class SingleTemplate
 	SingleTemplate(const TemplateType type) : m_template_type{type}{};
 
         SingleTemplate(const int nrof_minutiae, const int des_length):
-            m_des_length(des_length),
-            m_des(nrof_minutiae*m_des_length),
+            m_des(nrof_minutiae*des_length),
             m_minutiae(nrof_minutiae)
         {
         };
 
-        SingleTemplate(const int nrof_minutiae, const int des_length, const std::vector<float> des, const int blkH, const int blkW):
-        m_des_length{des_length},
+        SingleTemplate(const int nrof_minutiae, const std::vector<float> des, const int blkH, const int blkW):
         m_blkH{blkH},
         m_blkW{blkW},
         m_des{des},
@@ -65,12 +62,18 @@ class SingleTemplate
         {
         }
 
-        SingleTemplate(const int nrof_minutiae, const int des_length, const std::vector<float> des):
-        m_des_length{des_length},
+        SingleTemplate(const int nrof_minutiae, const std::vector<float> des):
         m_des{des},
         m_minutiae(nrof_minutiae)
         {
         }
+
+	int des_length() const {
+		if (m_minutiae.size() == 0)
+			return (0);
+
+		return (m_des.size() / m_minutiae.size());
+	}
 
         void set_x(const std::vector<short> &x)
         {
@@ -111,8 +114,8 @@ class MinutiaeTemplate:public SingleTemplate{
         };
 
         // minutiae, minutiae descriptor and ridge flow are included in minutiae template
-        MinutiaeTemplate(const int nrof_minutiae, const std::vector<short> &x,const std::vector<short> &y,const std::vector<float> &ori,const int des_length, const std::vector<float> &des, const int blkH, const int blkW):
-        SingleTemplate(nrof_minutiae, des_length, des, blkH, blkW)
+        MinutiaeTemplate(const int nrof_minutiae, const std::vector<short> &x,const std::vector<short> &y,const std::vector<float> &ori, const std::vector<float> &des, const int blkH, const int blkW):
+        SingleTemplate(nrof_minutiae, des, blkH, blkW)
         {
             // minutiae
             set_x(x);
@@ -134,8 +137,8 @@ class TextureTemplate: public SingleTemplate
         };
 
         // Only minutiae and minutiae descriptors are included in texture template
-        TextureTemplate(const int nrof_minutiae, const std::vector<short> &x,const std::vector<short> &y,const std::vector<float> &ori, const int des_length, const std::vector<float> &des):
-        SingleTemplate(nrof_minutiae, des_length, des)
+        TextureTemplate(const int nrof_minutiae, const std::vector<short> &x,const std::vector<short> &y,const std::vector<float> &ori, const std::vector<float> &des):
+        SingleTemplate(nrof_minutiae, des)
         {
             this->set_type(TemplateType::Texture);
 
@@ -156,8 +159,8 @@ class LatentTextureTemplate: public TextureTemplate
         LatentTextureTemplate(const int nrof_minutiae, const int des_length):TextureTemplate(nrof_minutiae,des_length)
         {
         };
-        LatentTextureTemplate(const int nrof_minutiae, const std::vector<short> &x,const std::vector<short> &y,const std::vector<float> &ori, const int des_length, const std::vector<float> &des):
-        TextureTemplate(nrof_minutiae, x, y, ori, des_length, des)
+        LatentTextureTemplate(const int nrof_minutiae, const std::vector<short> &x,const std::vector<short> &y,const std::vector<float> &ori, const std::vector<float> &des):
+        TextureTemplate(nrof_minutiae, x, y, ori, des)
         {}
 
         void compute_dist_to_codewords(const std::vector<float> &codewords, const int nrof_subs, const int sub_dim,  const int nrof_clusters)
@@ -167,7 +170,7 @@ class LatentTextureTemplate: public TextureTemplate
             float *pword2;
             for(int i=0; i<this->m_minutiae.size() ; ++i)
             {
-                float *pdes0 = m_des.data() +  i*m_des_length;
+                float *pdes0 = m_des.data() +  i*this->des_length();
 
                 for(int j=0;j<nrof_subs ; ++j)
                 {
@@ -201,12 +204,12 @@ class RolledTextureTemplatePQ:public TextureTemplate
         RolledTextureTemplatePQ() : TextureTemplate() {}
 
         RolledTextureTemplatePQ(const int nrof_minutiae, const int des_length):TextureTemplate(nrof_minutiae, des_length),
-            m_desPQ(nrof_minutiae*m_des_length)
+            m_desPQ(nrof_minutiae*des_length)
         {
         }
 
-        RolledTextureTemplatePQ(const int nrof_minutiae, const std::vector<short> &x,const std::vector<short> &y,const std::vector<float> &ori, const int des_length, const std::vector<float> &des):
-        TextureTemplate(nrof_minutiae, x, y, ori, des_length, {})
+        RolledTextureTemplatePQ(const int nrof_minutiae, const std::vector<short> &x,const std::vector<short> &y,const std::vector<float> &ori, const std::vector<float> &des):
+        TextureTemplate(nrof_minutiae, x, y, ori, {})
         {
         	/* FIXME: m_desPQ is unsigned char, but storing floats? Bug? */
         	for (const float &f : des)

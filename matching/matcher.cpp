@@ -460,12 +460,12 @@ const
     int n_time = 0;
     int i,j,k;
 
-    int des_len = rolled_minu_template.m_des_length;
-    if(des_len!=latent_minu_template.m_des_length){
-        cout<<latent_minu_template.m_des_length<<endl;
-	cout<<rolled_minu_template.m_des_length<<endl;
+    int des_len = rolled_minu_template.des_length();
+    if(des_len!=latent_minu_template.des_length()){
+        cout<<latent_minu_template.des_length()<<endl;
+	cout<<rolled_minu_template.des_length()<<endl;
 	}
-    assert(des_len == latent_minu_template.m_des_length);
+    assert(des_len == latent_minu_template.des_length());
 
     float simi = 0.0;
 
@@ -579,7 +579,7 @@ const
     int n_time = 0;
     int i,j,k;
 
-    int des_len = rolled_texture_template.m_des_length;
+    int des_len = rolled_texture_template.des_length();
 
    std::unique_ptr<float[]> simi_matrix{new float[MaxNRolledMinu*MaxNLatentMinu]};
    memset(simi_matrix.get(),0,MaxNRolledMinu*MaxNLatentMinu*sizeof(float));
@@ -617,7 +617,7 @@ const
                 dist3 = 0.;
                 dist4 = 0.;
                 p_dist_codewords1 = p_dist_codewords0;
-                const unsigned char *p_des0 = rolled_texture_template.m_desPQ.data() + j* rolled_texture_template.m_des_length;
+                const unsigned char *p_des0 = rolled_texture_template.m_desPQ.data() + j* rolled_texture_template.des_length();
                 for(k=0; k<nrof_subs; k+=4, p_dist_codewords1+=4*nrof_clusters)
                 {
                     code1 = *(p_des0+k);
@@ -656,7 +656,7 @@ const
                        dist3 = 0.;
                        dist4 = 0.;
                        p_dist_codewords1 = p_dist_codewords0;
-                       const unsigned char *p_des0 = rolled_texture_template.m_desPQ.data() + jj* rolled_texture_template.m_des_length;
+                       const unsigned char *p_des0 = rolled_texture_template.m_desPQ.data() + jj* rolled_texture_template.des_length();
 
 
                         for(k=0; k<nrof_subs; k+=4, p_dist_codewords1+=4*nrof_clusters)
@@ -689,7 +689,7 @@ const
             for(j=0; j<numExemplarMinutiae-B2; j += B2)
             {
                 p_dist_codewords1 = p_dist_codewords0;
-                const unsigned char *p_des0 = rolled_texture_template.m_desPQ.data() + j* rolled_texture_template.m_des_length;
+                const unsigned char *p_des0 = rolled_texture_template.m_desPQ.data() + j* rolled_texture_template.des_length();
                 for(int ii=i; ii<i+B1; ++ii)
                 {
                     const unsigned char *p_des1 = p_des0;
@@ -717,7 +717,7 @@ const
 
                         }
                         simi_matrix[ii*numExemplarMinutiae+jj] = (dist1+dist2)+ (dist3+dist4);
-                        p_des1 +=  rolled_texture_template.m_des_length;
+                        p_des1 +=  rolled_texture_template.des_length();
                     }
                     p_dist_codewords1 += nrof_subs*nrof_clusters;
                 }
@@ -734,10 +734,10 @@ const
                 for(j=0; j<numExemplarMinutiae-4; j+=4)
                 {
                     n = i*numExemplarMinutiae + j;
-                    const unsigned char *p_des0 = rolled_texture_template.m_desPQ.data() + j* rolled_texture_template.m_des_length + k;
-                    const unsigned char *p_des1 = p_des0 + rolled_texture_template.m_des_length;
-                    const unsigned char *p_des2 = p_des1 + rolled_texture_template.m_des_length;
-                    const unsigned char *p_des3 = p_des2 + rolled_texture_template.m_des_length;
+                    const unsigned char *p_des0 = rolled_texture_template.m_desPQ.data() + j* rolled_texture_template.des_length() + k;
+                    const unsigned char *p_des1 = p_des0 + rolled_texture_template.des_length();
+                    const unsigned char *p_des2 = p_des1 + rolled_texture_template.des_length();
+                    const unsigned char *p_des3 = p_des2 + rolled_texture_template.des_length();
 
                     dist0 -= *(p_dist_codewords0 + *p_des0);
 
@@ -931,7 +931,7 @@ LatentFPTemplate Matcher::load_latent_template(const std::vector<uint8_t> &buf) 
         des.resize(nrof_minutiae * des_len);
         is.read(reinterpret_cast<char*>(des.data()),sizeof(float)*nrof_minutiae*des_len);
 
-        MinutiaeTemplate minu_template(nrof_minutiae,x,y,ori,des_len,des,blkH, blkW);
+        MinutiaeTemplate minu_template(nrof_minutiae,x,y,ori,des,blkH, blkW);
         fp_template.add_template(minu_template);
     }
 
@@ -959,7 +959,7 @@ LatentFPTemplate Matcher::load_latent_template(const std::vector<uint8_t> &buf) 
         is.read(reinterpret_cast<char*>(des.data()),sizeof(float)*nrof_minutiae*des_len);
 
 
-        LatentTextureTemplate texture_template(nrof_minutiae,x,y,ori,des_len,des);
+        LatentTextureTemplate texture_template(nrof_minutiae,x,y,ori,des);
         texture_template.compute_dist_to_codewords(this->codewords, nrof_subs,  sub_dim,  nrof_clusters);
         fp_template.add_texture_template(texture_template);
     }
@@ -1074,7 +1074,7 @@ RolledFPTemplate Matcher::load_rolled_template(const std::vector<uint8_t> &buf) 
         des.resize(nrof_minutiae * des_len);
         is.read(reinterpret_cast<char*>(des.data()),sizeof(float)*nrof_minutiae*des_len);
 
-        MinutiaeTemplate minu_template(nrof_minutiae,x,y,ori,des_len,des,blkH, blkW);
+        MinutiaeTemplate minu_template(nrof_minutiae,x,y,ori,des,blkH, blkW);
         fp_template.add_template(minu_template);
     }
 
@@ -1101,7 +1101,7 @@ RolledFPTemplate Matcher::load_rolled_template(const std::vector<uint8_t> &buf) 
         des.resize(nrof_minutiae * des_len);
         is.read(reinterpret_cast<char*>(des.data()),sizeof(float)*nrof_minutiae*des_len);
 
-        RolledTextureTemplatePQ texture_template(nrof_minutiae,x,y,ori,des_len,des);
+        RolledTextureTemplatePQ texture_template(nrof_minutiae,x,y,ori,des);
         fp_template.add_texture_template(texture_template);
     }
 
