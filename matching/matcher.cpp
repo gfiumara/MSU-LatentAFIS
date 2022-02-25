@@ -599,8 +599,7 @@ const
     float *p_dist_codewords0 = NULL, *p_dist_codewords1 = NULL, *p_dist_codewords2 =NULL;
 
     /* Make a copy of the codewords from the latent texture template */
-    std::unique_ptr<float[]> latent_texture_template_m_dist_codewords_copy(new float[latent_texture_template.m_dist_codewords.size()]);
-    std::copy(latent_texture_template.m_dist_codewords.begin(), latent_texture_template.m_dist_codewords.end(), latent_texture_template_m_dist_codewords_copy.get());
+    std::vector<float> latent_texture_template_m_dist_codewords_copy{latent_texture_template.m_dist_codewords};
 
     int n=0;
     int nrof_clusters3 = nrof_clusters*3, nrof_clusters2 = nrof_clusters*2;
@@ -609,7 +608,7 @@ const
     {
         for(i=0; i<numLatentMinutiae; ++i)
         {
-            p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.get() + i*nrof_subs*nrof_clusters;
+            p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.data() + i*nrof_subs*nrof_clusters;
             for(j=0; j<numExemplarMinutiae; ++j)
             {
                 dist1 = 6.;
@@ -648,7 +647,7 @@ const
 
                 for(int ii=i; ii<i+B1; ++ii)
                 {
-                    p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.get() + ii*nrof_subs*nrof_clusters;
+                    p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.data() + ii*nrof_subs*nrof_clusters;
                     for(int jj=j; jj<j+B2; ++jj)
                     {
                        dist1 = 6.;
@@ -685,7 +684,7 @@ const
          int B1=64, B2 = 64;
         for(i=0; i<numLatentMinutiae-B1; i+=B1)
         {
-            p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.get() + i*nrof_subs*nrof_clusters;
+            p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.data() + i*nrof_subs*nrof_clusters;
             for(j=0; j<numExemplarMinutiae-B2; j += B2)
             {
                 p_dist_codewords1 = p_dist_codewords0;
@@ -728,7 +727,7 @@ const
     {
         for(i=0; i<numLatentMinutiae; ++i)
         {
-            p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.get() + i*nrof_subs*nrof_clusters;
+            p_dist_codewords0 = latent_texture_template_m_dist_codewords_copy.data() + i*nrof_subs*nrof_clusters;
             for(k=0; k<nrof_subs; ++k)
             {
                 for(j=0; j<numExemplarMinutiae-4; j+=4)
