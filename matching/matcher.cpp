@@ -874,10 +874,10 @@ LatentFPTemplate Matcher::load_latent_template(const std::vector<uint8_t> &buf) 
     short des_len;
     int i,j;
 
-    std::vector<short> x(Max_Nrof_Minutiae);
-    std::vector<short> y(Max_Nrof_Minutiae);
-    std::vector<float> ori(Max_Nrof_Minutiae);
-    std::vector<float> des(Max_Nrof_Minutiae*Max_Des_Length);
+    std::vector<short> x{};
+    std::vector<short> y{};
+    std::vector<float> ori{};
+    std::vector<float> des{};
 
     for(int i=0; i<12; i++){
         is.read(reinterpret_cast<char*>(&header[i]),sizeof(short));
@@ -920,11 +920,15 @@ LatentFPTemplate Matcher::load_latent_template(const std::vector<uint8_t> &buf) 
             throw std::runtime_error{"The size of the ridge flow is larger "
                 "than maximum size: " + std::to_string(Max_BlkSize)};
         }
+        x.resize(nrof_minutiae);
         is.read(reinterpret_cast<char*>(x.data()),sizeof(short)*nrof_minutiae);
+        y.resize(nrof_minutiae);
         is.read(reinterpret_cast<char*>(y.data()),sizeof(short)*nrof_minutiae);
+        ori.resize(nrof_minutiae);
         is.read(reinterpret_cast<char*>(ori.data()),sizeof(float)*nrof_minutiae);
         is.read(reinterpret_cast<char*>(&des_len),sizeof(short));
 
+        des.resize(nrof_minutiae * des_len);
         is.read(reinterpret_cast<char*>(des.data()),sizeof(float)*nrof_minutiae*des_len);
 
         MinutiaeTemplate minu_template(nrof_minutiae,x,y,ori,des_len,des,blkH, blkW);
@@ -944,10 +948,14 @@ LatentFPTemplate Matcher::load_latent_template(const std::vector<uint8_t> &buf) 
                 "Number of Minutiae: " + std::to_string(nrof_minutiae) + ">" +
                 std::to_string(Max_Nrof_Minutiae)};
         }
+        x.resize(nrof_minutiae);
         is.read(reinterpret_cast<char*>(x.data()),sizeof(short)*nrof_minutiae);
+        y.resize(nrof_minutiae);
         is.read(reinterpret_cast<char*>(y.data()),sizeof(short)*nrof_minutiae);
+        ori.resize(nrof_minutiae);
         is.read(reinterpret_cast<char*>(ori.data()),sizeof(float)*nrof_minutiae);
         is.read(reinterpret_cast<char*>(&des_len),sizeof(short));
+        des.resize(nrof_minutiae * des_len);
         is.read(reinterpret_cast<char*>(des.data()),sizeof(float)*nrof_minutiae*des_len);
 
 
@@ -1009,11 +1017,11 @@ RolledFPTemplate Matcher::load_rolled_template(const std::vector<uint8_t> &buf) 
     short des_len=96;
     int i,j;
 
-    std::vector<short> x(Max_Nrof_Minutiae);
-    std::vector<short> y(Max_Nrof_Minutiae);
-    std::vector<float> ori(Max_Nrof_Minutiae);
+    std::vector<short> x{};
+    std::vector<short> y{};
+    std::vector<float> ori{};
 
-    std::vector<float> des(Max_Nrof_Minutiae*Max_Des_Length);
+    std::vector<float> des{};
 
     for(int i=0; i<12; i++){
         is.read(reinterpret_cast<char*>(&header[i]),sizeof(short));
@@ -1055,11 +1063,15 @@ RolledFPTemplate Matcher::load_rolled_template(const std::vector<uint8_t> &buf) 
             throw std::runtime_error{"The size of the ridge flow is larger "
                 "than maximum size: " + std::to_string(Max_BlkSize)};
         }
+        x.resize(nrof_minutiae);
         is.read(reinterpret_cast<char*>(x.data()),sizeof(short)*nrof_minutiae);
+        y.resize(nrof_minutiae);
         is.read(reinterpret_cast<char*>(y.data()),sizeof(short)*nrof_minutiae);
+        ori.resize(nrof_minutiae);
         is.read(reinterpret_cast<char*>(ori.data()),sizeof(float)*nrof_minutiae);
         is.read(reinterpret_cast<char*>(&des_len),sizeof(short));
 
+        des.resize(nrof_minutiae * des_len);
         is.read(reinterpret_cast<char*>(des.data()),sizeof(float)*nrof_minutiae*des_len);
 
         MinutiaeTemplate minu_template(nrof_minutiae,x,y,ori,des_len,des,blkH, blkW);
@@ -1079,10 +1091,14 @@ RolledFPTemplate Matcher::load_rolled_template(const std::vector<uint8_t> &buf) 
                 "Number of Minutiae: " + std::to_string(nrof_minutiae) + ">" +
                 std::to_string(Max_Nrof_Minutiae)};
         }
+        x.resize(nrof_minutiae);
         is.read(reinterpret_cast<char*>(x.data()),sizeof(short)*nrof_minutiae);
+        y.resize(nrof_minutiae);
         is.read(reinterpret_cast<char*>(y.data()),sizeof(short)*nrof_minutiae);
+        ori.resize(nrof_minutiae);
         is.read(reinterpret_cast<char*>(ori.data()),sizeof(float)*nrof_minutiae);
         is.read(reinterpret_cast<char*>(&des_len),sizeof(short));
+        des.resize(nrof_minutiae * des_len);
         is.read(reinterpret_cast<char*>(des.data()),sizeof(float)*nrof_minutiae*des_len);
 
         RolledTextureTemplatePQ texture_template(nrof_minutiae,x,y,ori,des_len,des);
