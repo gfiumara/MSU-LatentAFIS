@@ -1002,7 +1002,6 @@ RolledFPTemplate Matcher::load_rolled_template(const std::vector<uint8_t> &buf) 
     std::vector<short> x(Max_Nrof_Minutiae);
     std::vector<short> y(Max_Nrof_Minutiae);
     std::vector<float> ori(Max_Nrof_Minutiae);
-    std::vector<float> reliability(Max_Nrof_Minutiae);
 
     std::vector<float> des(Max_Nrof_Minutiae*Max_Des_Length);
 
