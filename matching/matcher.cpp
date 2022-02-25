@@ -842,9 +842,14 @@ LatentFPTemplate Matcher::load_latent_template(const std::string &tname) const
 LatentFPTemplate Matcher::load_latent_template(const std::vector<uint8_t> &buf) const
 {
     LatentFPTemplate fp_template{};
-    const short Max_Nrof_Minutiae = 2*1000; // including virtual minutiae. We only consider top 1000 minutiae including both real and virtual minutiae for each template.
-    const short Max_Des_Length = 192;
-    const short Max_BlkSize = 100;
+    /*
+     * FIXME: When using dynamic-sized containers, these maximums aren't
+     *        necessary. Preserving them for historical reasons (we probably
+     *        don't want to search when there's >2000 minutiae anyway).
+     */
+    static const short Max_Nrof_Minutiae = 2*1000; // including virtual minutiae. We only consider top 1000 minutiae including both real and virtual minutiae for each template.
+    static const short Max_Des_Length = 192;
+    static const short Max_BlkSize = 100;
 
     std::istringstream is{
         {reinterpret_cast<const char *>(buf.data()), buf.size()},
@@ -971,9 +976,14 @@ RolledFPTemplate Matcher::load_rolled_template(const string &tname) const
 RolledFPTemplate Matcher::load_rolled_template(const std::vector<uint8_t> &buf) const
 {
     RolledFPTemplate fp_template{};
-    const short Max_Nrof_Minutiae = 2*1000; // including virtual minutiae. We only consider top 1000 minutiae including both real and virtual minutiae for each template.
-    const short Max_Des_Length = 192;
-    const short Max_BlkSize = 100;
+    /*
+     * FIXME: When using dynamic-sized containers, these maximums aren't
+     *        necessary. Preserving them for historical reasons (we probably
+     *        don't want to search when there's >2000 minutiae anyway).
+     */
+    static const short Max_Nrof_Minutiae = 2*1000; // including virtual minutiae. We only consider top 1000 minutiae including both real and virtual minutiae for each template.
+    static const short Max_Des_Length = 192;
+    static const short Max_BlkSize = 100;
 
     std::istringstream is{
         {reinterpret_cast<const char *>(buf.data()), buf.size()},
